@@ -1,0 +1,31 @@
+<div class="container mt-5" style="color: #000;">
+    <app-toasts></app-toasts>
+    <div class="row mt-5">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6 mt-5 text-center" *ngIf="!verificationDone">
+            <div class="lds-roller">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <div class="col-lg-6 mt-5" *ngIf="verificationDone">
+            <div class="card text-center">
+                <div class="card-header">
+                    CRM
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Account verification successfull</h5>
+                    <p class="card-text">Login to use all the features of the application</p>
+                    <a routerLink="/" class="btn btn-primary">Login</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+</div>
