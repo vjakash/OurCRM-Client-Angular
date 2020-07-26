@@ -16,6 +16,11 @@ import { RegisterComponent } from './register/register.component';
 import { VerifyaccountComponent } from './verifyaccount/verifyaccount.component'
 import { AuthGuard } from './guards/auth.guard';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { LeadsComponent } from './leads/leads.component';
+import { HomeComponent } from './home/home.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AddleadComponent } from './addlead/addlead.component';
+import { UpdateleadComponent } from './updatelead/updatelead.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,6 +31,10 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     ResetpasswordComponent,
     RegisterComponent,
     VerifyaccountComponent,
+    LeadsComponent,
+    HomeComponent,
+    AddleadComponent,
+    UpdateleadComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,7 +42,8 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
+    FontAwesomeModule
   ],
   providers: [AuthGuard,{provide: LocationStrategy,useClass:HashLocationStrategy}],
   bootstrap: [AppComponent]

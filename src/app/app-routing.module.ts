@@ -7,6 +7,10 @@ import { ResetpasswordComponent } from './resetpassword/resetpassword.component'
 import { RegisterComponent } from './register/register.component';
 import { VerifyaccountComponent } from './verifyaccount/verifyaccount.component';
 import { AuthGuard } from './guards/auth.guard';
+import { HomeComponent } from './home/home.component';
+import { LeadsComponent } from './leads/leads.component';
+import { AddleadComponent } from './addlead/addlead.component';
+import { UpdateleadComponent } from './updatelead/updatelead.component';
 
 
 const routes: Routes = [{
@@ -28,7 +32,20 @@ const routes: Routes = [{
 },{
   path:'dashboard',
   component:DashboardComponent,
-  canActivate:[AuthGuard]
+  canActivate:[AuthGuard],
+  children:[{
+    path:'',
+    component:HomeComponent
+  },{
+    path:'leads',
+    component:LeadsComponent
+  },{
+  path:'addlead',
+  component:AddleadComponent
+},{
+  path:'updatelead/:id',
+  component:UpdateleadComponent
+}]
 }];
 
 @NgModule({

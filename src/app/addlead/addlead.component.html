@@ -1,0 +1,139 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-12 px-md-4">
+    <app-toasts></app-toasts>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2 font-weight-bolder">Create Lead</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <button class="btn btn-secondary" routerLink="/dashboard/leads">Cancel</button>&nbsp;&nbsp;&nbsp;
+            <button class="btn btn-primary" (click)="createLead()">save</button>
+        </div>
+    </div>
+    <div class="container" *ngIf="displayLoader">
+        <div class="row mt-5">
+            <div class="col-lg-12 mt-5 text-center">
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="!displayLoader">
+        <div class="container-fluid">
+            <form [formGroup]="leadDetails">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="font-weight-bold">Lead Information</h3>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">Owner</label> Owner
+                                <div class="input-group mb-3">
+                                    <select class="custom-select" id="inputGroupSelect01" formControlName="owner">
+                                  <option value="" selected>Choose...</option>
+                                  <ng-container *ngFor="let item of employees;let i=index">
+                                      <option [value]="i">{{item.firstName}} {{ item.lastName}}</option>
+                                  </ng-container>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">Company</label>Lead Company
+                                <input type="text" id="company" formControlName="company" class="form-control mb-3" placeholder="Company">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">firstName</label> First Name
+                                <input type="text" id="firstName" formControlName="firstName" class="form-control mb-3" placeholder="First Name">
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">lastName</label> Last Name
+                                <input type="text" id="lastName" formControlName="lastName" class="form-control mb-3" placeholder="Last Name">
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">email</label> Email-ID
+                                <input type="email" id="inputEmail" formControlName="email" class="form-control mb-3" placeholder="Email address">
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">title</label> Title
+                                <input type="text" id="title" formControlName="title" class="form-control mb-3" placeholder="Lead Title">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">mobile</label>Mobile number
+                                <input type="text" id="mobile" formControlName="mobile" class="form-control mb-3" placeholder="Mobile number">
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">phone</label> Phone
+                                <input type="text" id="phone" formControlName="phone" class="form-control mb-3" placeholder="Phone number">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">Lead Source</label>Lead Source
+                                <div class="input-group mb-3">
+                                    <select class="custom-select" id="inputGroupSelect01" formControlName="leadSource">
+                                  <option value="" selected>Choose...</option>
+                                  <option value="Advertisement">Advertisement</option>
+                                  <option value="Cold Call">Cold Call</option>
+                                  <option value="Employee Reference">Employee Reference</option>
+                                  <option value="External Reference">External Reference</option>
+                                  <option value="Online Store">Online Store</option>
+                                  <option value="Partner">Partner</option>
+                                  <option value="Public Relations">Public Relations</option>
+                                  <option value="Sales Email Alias">Sales Email Alias</option>
+                                  <option value="Web research">Web research</option>
+                                  <option value="Facebook">Facebook</option>
+                                  <option value="Google+">Google+</option>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">Lead Status</label>Lead Status
+                                <div class="input-group mb-3">
+                                    <select class="custom-select" id="inputGroupSelect01" formControlName="leadStatus">
+                                  <option value="" selected>Choose...</option>
+                                  <option value="New" selected>New</option>
+                                  <option value="Contacted">Contacted</option>
+                                  <option value="Lost">Lost</option>
+                                  <option value="Cancelled">Cancelled</option>
+                                  <option value="Qualified">Qualified</option>
+                                  <option value="Confirmed">Confirmed</option>
+                                  
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">Secondary Email</label>Secondary Email
+                                <input type="password" id="secondaryEmail" formControlName="secondaryEmail" class="form-control mb-3" placeholder="Secondary Email">
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <!-- <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">employeeId</label> Employee Id
+                            <input type="text" id="employeeId" formControlName="employeeId" class="form-control mb-3" placeholder="Phone number">
+                        </div> -->
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ng-container>
+</main>
