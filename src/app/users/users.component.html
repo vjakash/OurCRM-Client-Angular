@@ -1,0 +1,282 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-12 px-md-4">
+    <app-toasts></app-toasts>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="holder ml-5">
+            <span *ngIf="false"> 
+                <button class="switchBtn" [ngClass]="{'active':active==='allusers'}" (click)="active='allusers';selectedLead=[]" >All Users</button> |
+            </span>
+            <button class="switchBtn" [ngClass]="{'active':active==='employees'}" (click)="active='employees';selectedLead=[]">Employees</button> |
+            <button class="switchBtn" [ngClass]="{'active':active==='managers'}" (click)="active='managers';selectedLead=[]">Managers</button>
+            <span *ngIf="serv.getUserData().userType==='admin'"> 
+                |
+                <button class="switchBtn" [ngClass]="{'active':active==='admins'}" (click)="active='admins'">Admins</button>
+            </span>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+
+            <!-- <div class="btn-group mr-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+            </div> -->
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+          <span data-feather="calendar"></span>
+          This week
+        </button> -->
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row" style="height: 30px;">
+            <div class="col-lg-1 ">
+                <div class="row">
+                    <div class="col-lg-6"> </div>
+                    <div class="col-lg-6"> <input type="checkbox" [checked]="selectAllLeads" (change)="selectAllLeads=!selectAllLeads;selectAll()" /></div>
+                </div>
+            </div>
+            <div class="col-lg-9"></div>
+            <div class="col-lg-2 text-right">
+                <!-- <button class="btn btn-primary">Add User</button> -->
+                <div class="btn-group mr-2">
+                    <button type="button" class="btn btn-outline-primary" routerLink="/dashboard/users/adduser">Add User</button>
+                    <button type="button" class="btn " (click)="deleteLead()" [ngClass]="{'btn-danger':selectedLead.length!==0,'btn-outline-secondary':selectedLead.length===0}" [disabled]="selectedLead.length===0">Delete</button>
+                </div>
+                <!-- <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+              <span data-feather="calendar"></span>
+              This week
+            </button> -->
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="container" *ngIf="displayLoader">
+        <div class="row mt-5">
+            <div class="col-lg-12 mt-5 text-center">
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="!displayLoader && active==='allusers'">
+        <div class="container-fluid" *ngFor="let item of users['allusers']; let i=index">
+            <div class="row" [ngClass]="{'leadSelected':item.selected}">
+                <div class="col-lg-1 p-3">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button> -->
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="checkbox" [checked]="item.selected" class="leads" (change)="item.selected=!item.selected; getSelectedUsers()" [value]="item['_id']" />
+                        </div>
+                    </div>
+
+                </div>
+                <!-- <div class="col-lg-1 p-3"></div> -->
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3>{{item.firstName|titlecase}} {{item.lastName|titlecase}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+item.phone">{{item.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+item.email">{{item.email}}</a>
+                                <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                <a [href]="'tel:'+item.mobile">{{item.mobile}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Manager: </span>{{item.managerName}} <span class="text-muted font-weight-normal">| Manager Email: </span> {{item.manager}} </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 text-left">
+
+                </div>
+                <div class="col-lg-3 text-right">
+
+                </div>
+
+            </div>
+            <hr>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!displayLoader && active==='employees'">
+        <div class="container-fluid" *ngFor="let item of users['employees']; let i=index">
+            <div class="row" [ngClass]="{'leadSelected':item.selected}">
+                <div class="col-lg-1 p-3">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button> -->
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="checkbox" [checked]="item.selected" class="leads" (change)="item.selected=!item.selected; getSelectedUsers()" [value]="item['_id']" />
+                        </div>
+                    </div>
+
+                </div>
+                <!-- <div class="col-lg-1 p-3"></div> -->
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3>{{item.firstName|titlecase}} {{item.lastName|titlecase}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+item.phone">{{item.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+item.email">{{item.email}}</a>
+                                <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                <a [href]="'tel:'+item.mobile">{{item.mobile}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Manager: </span>{{item.managerName}} <span class="text-muted font-weight-normal">| Manager Email: </span> {{item.manager}} </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 text-left">
+                    <p class="text-muted">Total Revenue</p>
+                    <h6>{{item.totalRevenue |currency}}</h6>
+                </div>
+                <div class="col-lg-3 text-left">
+                    <p class="text-muted">Access Rights
+                        <button class="editbtn" (click)="changeAccessRights=!changeAccessRights;activeUser=item['_id']"><fa-icon [icon]="faPencilAlt"></fa-icon></button>
+                    </p>
+                    <ng-container *ngIf="activeUser!=item['_id']">
+                        <p>
+                            <fa-icon [icon]="faCheck" *ngIf="item.accessRights.indexOf('view')>-1"></fa-icon>
+                            <fa-icon [icon]="faTimes" *ngIf="item.accessRights.indexOf('view')==-1"></fa-icon>&nbsp; View &nbsp;&nbsp;&nbsp;
+                            <fa-icon [icon]="faCheck" *ngIf="item.accessRights.indexOf('create')>-1"></fa-icon>
+                            <fa-icon [icon]="faTimes" *ngIf="item.accessRights.indexOf('create')==-1"></fa-icon>&nbsp; Create</p>
+                        <p>
+                            <fa-icon [icon]="faCheck" *ngIf="item.accessRights.indexOf('edit')>-1"></fa-icon>
+                            <fa-icon [icon]="faTimes" *ngIf="item.accessRights.indexOf('edit')==-1"></fa-icon>&nbsp; Edit &nbsp;&nbsp;&nbsp;
+                            <fa-icon [icon]="faCheck" *ngIf="item.accessRights.indexOf('delete')>-1"></fa-icon>
+                            <fa-icon [icon]="faTimes" *ngIf="item.accessRights.indexOf('delete')==-1"></fa-icon>&nbsp; Delete</p>
+                    </ng-container>
+
+                    <ng-container *ngIf="activeUser==item['_id']">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1" (click)="changeAccess(item['_id'],item.accessRights,'view')" value="view" [checked]="item.accessRights.indexOf('view')>-1" disabled>
+                            <label class="custom-control-label" for="customCheck1">View</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck2" (click)="changeAccess(item['_id'],item.accessRights,'create')" value="create" [checked]="item.accessRights.indexOf('create')>-1">
+                            <label class="custom-control-label" for="customCheck2">Create</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck3" (click)="changeAccess(item['_id'],item.accessRights,'edit')" value="edit" [checked]="item.accessRights.indexOf('edit')>-1">
+                            <label class="custom-control-label" for="customCheck3">Edit</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck4" (click)="changeAccess(item['_id'],item.accessRights,'delete')" value="delete" [checked]="item.accessRights.indexOf('delete')>-1">
+                            <label class="custom-control-label" for="customCheck4">Delete</label>
+                        </div>
+                        <div class="row mt-1">
+                            <div class="col-lg-2"> <button class="btn-sm btn-danger" (click)="activeUser=''"><fa-icon [icon]="faTimes"></fa-icon></button></div>
+
+                            <div class="col-lg-2"> <button class="btn-sm btn-success" (click)="updateUpdateAccess(item['_id'],item.accessRights)"> <fa-icon [icon]="faCheck"></fa-icon></button></div>
+                        </div>
+
+
+                    </ng-container>
+                </div>
+
+            </div>
+            <hr>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!displayLoader && active==='managers'">
+        <div class="container-fluid" *ngFor="let item of users['managers']; let i=index">
+            <div class="row" [ngClass]="{'leadSelected':item.selected}">
+                <div class="col-lg-1 p-3">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button> -->
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="checkbox" [checked]="item.selected" class="leads" (change)="item.selected=!item.selected; getSelectedUsers()" [value]="item['_id']" />
+                        </div>
+                    </div>
+
+                </div>
+                <!-- <div class="col-lg-1 p-3"></div> -->
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3>{{item.firstName|titlecase}} {{item.lastName|titlecase}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+item.phone">{{item.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+item.email">{{item.email}}</a>
+                                <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                <a [href]="'tel:'+item.mobile">{{item.mobile}}</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 text-left">
+
+                </div>
+                <div class="col-lg-3 text-right">
+
+                </div>
+
+            </div>
+            <hr>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!displayLoader && active==='admins' && serv.getUserData().userType==='admin'">
+        <div class="container-fluid" *ngFor="let item of users['admins']; let i=index">
+            <div class="row" [ngClass]="{'leadSelected':item.selected}">
+                <div class="col-lg-1 p-3">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <!-- <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button> -->
+                        </div>
+                        <div class="col-lg-6">
+                            {{item.selected}}
+                            <input type="checkbox" [checked]="item.selected && !item.isRootUser" class="leads" (change)="item.selected=!item.selected; getSelectedUsers()" [value]="item['_id']" />
+                        </div>
+                    </div>
+
+                </div>
+                <!-- <div class="col-lg-1 p-3"></div> -->
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3>{{item.firstName|titlecase}} {{item.lastName|titlecase}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+item.phone">{{item.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+item.email">{{item.email}}</a>
+                                <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                <a [href]="'tel:'+item.mobile">{{item.mobile}}</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 text-left">
+
+                </div>
+                <div class="col-lg-3 text-right">
+
+                </div>
+
+            </div>
+            <hr>
+        </div>
+    </ng-container>
+</main>

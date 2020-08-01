@@ -35,7 +35,7 @@
                             <div class="col-lg-5">
                                 <label for="inputEmail" class="sr-only">Owner</label> Owner
                                 <div class="input-group mb-3">
-                                    <select class="custom-select" id="inputGroupSelect01" formControlName="owner">
+                                    <select class="custom-select" formControlName="owner">
                                   <option value="" selected>Choose...</option>
                                   <ng-container *ngFor="let item of employees;let i=index">
                                       <option [value]="i">{{item.firstName}} {{ item.lastName}}</option>
@@ -87,7 +87,7 @@
                             <div class="col-lg-5">
                                 <label for="inputEmail" class="sr-only">Lead Source</label>Lead Source
                                 <div class="input-group mb-3">
-                                    <select class="custom-select" id="inputGroupSelect01" formControlName="leadSource">
+                                    <select class="custom-select" formControlName="leadSource">
                                   <option value="" selected>Choose...</option>
                                   <option value="Advertisement">Advertisement</option>
                                   <option value="Cold Call">Cold Call</option>

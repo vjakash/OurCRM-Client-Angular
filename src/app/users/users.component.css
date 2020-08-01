@@ -7,6 +7,30 @@
     border: none;
 }
 
+.switchBtn {
+    background: none;
+    border: none;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.cancel {
+    background: none;
+    border: none;
+    font-size: 0.8em;
+}
+
+button,
+button:active,
+button:focus {
+    outline: 0;
+}
+
+.active {
+    color: blue;
+    border-bottom: 2px solid blue;
+}
+
 
 /**********************loader***************/
 

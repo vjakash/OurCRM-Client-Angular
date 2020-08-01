@@ -21,6 +21,12 @@ import { HomeComponent } from './home/home.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AddleadComponent } from './addlead/addlead.component';
 import { UpdateleadComponent } from './updatelead/updatelead.component';
+import { ContactsComponent } from './contacts/contacts.component';
+import { AddcontactComponent } from './addcontact/addcontact.component';
+import { UpdatecontactComponent } from './updatecontact/updatecontact.component';
+import { AdduserComponent } from './adduser/adduser.component';
+import { UsersComponent } from './users/users.component';
+import { UsershomeComponent } from './usershome/usershome.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,6 +41,12 @@ import { UpdateleadComponent } from './updatelead/updatelead.component';
     HomeComponent,
     AddleadComponent,
     UpdateleadComponent,
+    ContactsComponent,
+    AddcontactComponent,
+    UpdatecontactComponent,
+    AdduserComponent,
+    UsersComponent,
+    UsershomeComponent,
   ],
   imports: [
     BrowserModule,

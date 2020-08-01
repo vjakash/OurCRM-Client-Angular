@@ -19,11 +19,11 @@ displayLoader=false;
       lastName:this.fb.control(''),
       phone:this.fb.control(''),
       mobile:this.fb.control('',[Validators.required]),
-      userType:this.fb.control('',[Validators.required]),
+      userType:this.fb.control('admin',[Validators.required]),
       password:this.fb.control('',[Validators.required]),
       confirmPassword:this.fb.control('',[Validators.required]),
       dob:this.fb.control(''),
-      employeeId:this.fb.control('',[Validators.required])
+      company:this.fb.control('',[Validators.required])
     })
   }
 
@@ -36,7 +36,15 @@ displayLoader=false;
   }
   register(){
     if(this.details.valid){
+      let company = this.details.value.email.split("@");
+        company = company[1].split(".")[0];
+      if(company!==this.serv.getUserData().company){
+        alert("Enter a company Email Id");
+        return;
+      }
       if(this.details.value.password===this.details.value.confirmPassword){
+        delete this.details.value.confirmPassword;
+        this.details.value.company=this.details.value.company.split(" ").join("");
         this.displayLoader=true;
         this.serv.register(this.details.value).subscribe((data)=>{
           this.displayLoader=false;

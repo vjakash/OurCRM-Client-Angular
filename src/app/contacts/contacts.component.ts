@@ -5,66 +5,66 @@ import {ServService} from '../services/serv.service';
 import { ToastServiceService } from '../services/toast-service.service';
 import { Router } from '@angular/router';
 import {FormBuilder,FormControl, Validators} from '@angular/forms';
-import { build$ } from 'protractor/built/element';
-
 @Component({
-  selector: 'app-leads',
-  templateUrl: './leads.component.html',
-  styleUrls: ['./leads.component.css']
+  selector: 'app-contacts',
+  templateUrl: './contacts.component.html',
+  styleUrls: ['./contacts.component.css']
 })
-export class LeadsComponent implements OnInit {
+export class ContactsComponent implements OnInit {
+
   faPencilAlt = faPencilAlt;
   faCheck=faCheck;
-  leads=[];
+  contacts=[];
   displayLoader=true;
-  selectedLead=[];
-  selectAllLeads=false;
+  selectedContact=[];
+  selectAllContacts=false;
   updateLeadStatus=false;
   activeLeadStatus='';
   activeLead='';
-  constructor(private fb:FormBuilder,public serv:ServService,private toastService:ToastServiceService,private router:Router) { 
-    this.loadLeads();
+  constructor(private fb:FormBuilder,private serv:ServService,private toastService:ToastServiceService,private router:Router) { 
+    this.loadContacts();
   }
 
   ngOnInit(): void {
   }
-  loadLeads(){
-    this.serv.getAllLeads().subscribe((data)=>{
+  loadContacts(){
+    this.serv.getAllContacts().subscribe((data)=>{
       this.displayLoader=false;
-      this.leads=data['leads'].reverse().map(lead=>{lead.selected=false;return lead});
+      this.contacts=data['contacts'].reverse().map(lead=>{lead.selected=false;return lead});
       // console.log(this.leads);
     },(err)=>{
       this.displayLoader=false;
       console.log(err);
     });
   }
-  getSelectedLeads(){
-    this.selectedLead=this.leads.filter(item=>{if(item.selected)return item['_id']});
+  getSelectedContacts(){
+    this.selectedContact=this.contacts.filter(item=>{if(item.selected)return item['_id']});
     // console.log(this.selectedLead);
   }
   selectAll(){
-    if(this.selectAllLeads){
-      this.leads=this.leads.map(lead=>{lead.selected=true;return lead});
-      this.getSelectedLeads();
+    if(this.selectAllContacts){
+      this.contacts=this.contacts.map(lead=>{lead.selected=true;return lead});
+      this.getSelectedContacts();
     }else{
-      this.leads=this.leads.map(lead=>{lead.selected=false;return lead});
-      this.getSelectedLeads();
+      this.contacts=this.contacts.map(lead=>{lead.selected=false;return lead});
+      this.getSelectedContacts();
     }
   }
-  deleteLead(){
+  deleteContact(){
     let cnfrm=confirm("Do you really want to delete the selected leads?");
     if(cnfrm){
-      if(this.selectedLead.length!=0){
-        for(let i of this.selectedLead){
+      if(this.selectedContact.length!=0){
+        for(let i of this.selectedContact){
           this.displayLoader=true;
-          this.serv.deleteLead(i['_id']).subscribe((data)=>{
+          this.serv.deleteContact(i['_id']).subscribe((data)=>{
             this.showSuccess(data['message']);
-            this.selectAllLeads=false;
-            this.selectedLead=[];
-            this.loadLeads();
+            this.selectAllContacts=false;
+            this.selectedContact=[];
+            this.loadContacts();
           },(err)=>{
             console.log(err);
             this.showDanger(err.error['message']);
+            this.loadContacts();
           })
         }
       }
@@ -73,8 +73,8 @@ export class LeadsComponent implements OnInit {
   updateStatus(index, leadId, leadStatus,currentStatus){
     if(leadStatus!==currentStatus){
         // this.displayLoader=true;
-        let oldStatus=this.leads[index]['leadStatus'];
-        this.leads[index]['leadStatus']=leadStatus;
+        let oldStatus=this.contacts[index]['leadStatus'];
+        this.contacts[index]['leadStatus']=leadStatus;
         this.updateLeadStatus=!this.updateLeadStatus;
         this.activeLead='';
         this.activeLeadStatus='';
@@ -84,7 +84,7 @@ export class LeadsComponent implements OnInit {
         },(err)=>{
           console.log(err);
               this.showDanger(err.error['message']);
-              this.leads[index]['leadStatus']=oldStatus;
+              this.contacts[index]['leadStatus']=oldStatus;
           })
     }else{
       this.activeLead='';
@@ -103,4 +103,5 @@ export class LeadsComponent implements OnInit {
   showDanger(msg) {
     this.toastService.show(msg, { classname: 'bg-danger text-light', delay: 8000 });
   }
+
 }

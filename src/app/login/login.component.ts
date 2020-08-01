@@ -36,7 +36,8 @@ login(){
       this.showSuccess(data["message"]);
       this.serv.setToken(data['token']);
       this.serv.setEmail(data['email']);
-      this.serv.userType=data['userType'];
+      // console.log(data);
+      this.serv.setUserData(data);
       this.router.navigate(['/dashboard']);
     },(err)=>{
       this.displayLoader=false;

@@ -32,9 +32,17 @@
                             </div>
                             <div class="col-lg-2"></div>
                             <div class="col-lg-5">
-                                <label for="inputEmail" class="sr-only">phone</label> Phone
-                                <input type="text" id="phone" formControlName="phone" class="form-control mb-3" placeholder="Phone number">
+                                <label for="inputEmail" class="sr-only">userType</label> User Type
+                                <div class="input-group mb-3">
+                                    <select class="custom-select" id="inputGroupSelect01" disabled>
+                                      <!-- <option value="" selected>Choose...</option> -->
+                                      <option value="admin" selected>Admin</option>
+                                      <option value="employee" >Employee</option>
+                                      <option value="manager">Manager</option>
+                                    </select>
+                                </div>
                             </div>
+
                         </div>
                         <div class="row">
                             <div class="col-lg-5">
@@ -43,27 +51,10 @@
                             </div>
                             <div class="col-lg-2"></div>
                             <div class="col-lg-5">
-                                <label for="inputEmail" class="sr-only">mobile</label>Mobile number
-                                <input type="text" id="mobile" formControlName="mobile" class="form-control mb-3" placeholder="Mobile number">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-5">
                                 <label for="inputEmail" class="sr-only">lastName</label> Last Name
                                 <input type="text" id="lastName" formControlName="lastName" class="form-control mb-3" placeholder="Last Name">
                             </div>
-                            <div class="col-lg-2"></div>
-                            <div class="col-lg-5">
-                                <label for="inputEmail" class="sr-only">userType</label> User Type
-                                <div class="input-group mb-3">
-                                    <select class="custom-select" id="inputGroupSelect01" formControlName="userType">
-                                      <!-- <option value="" selected>Choose...</option> -->
-                                      <option value="employee" selected>Employee</option>
-                                      <option value="admin">Admin</option>
-                                      <option value="manager">Manager</option>
-                                    </select>
-                                </div>
-                            </div>
+
                         </div>
                         <div class="row">
                             <div class="col-lg-5">
@@ -72,25 +63,37 @@
                             </div>
                             <div class="col-lg-2"></div>
                             <div class="col-lg-5">
-                                <label for="inputEmail" class="sr-only">dob</label> DOB
-                                <input type="date" id="dob" formControlName="dob" class="form-control mb-3" placeholder="Phone number">
+                                <label for="inputEmail" class="sr-only">confirmPassword</label>Confirm Password
+                                <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control mb-3" placeholder="Confirm Password">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-5">
-                                <label for="inputEmail" class="sr-only">confirmPassword</label>Confirm Password
-                                <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control mb-3" placeholder="Confirm Password">
+                                <label for="inputEmail" class="sr-only">mobile</label>Mobile number
+                                <input type="text" id="mobile" formControlName="mobile" class="form-control mb-3" placeholder="Mobile number">
                             </div>
                             <div class="col-lg-2"></div>
                             <div class="col-lg-5">
-                                <label for="inputEmail" class="sr-only">employeeId</label> Employee Id
-                                <input type="text" id="employeeId" formControlName="employeeId" class="form-control mb-3" placeholder="Phone number">
+                                <label for="inputEmail" class="sr-only">phone</label> Phone
+                                <input type="text" id="phone" formControlName="phone" class="form-control mb-3" placeholder="Phone number">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">dob</label> DOB
+                                <input type="date" id="dob" formControlName="dob" class="form-control mb-3" placeholder="Phone number">
+                            </div>
+
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">company</label> Company
+                                <input type="text" id="company" formControlName="company" class="form-control mb-3" placeholder="Company">
                             </div>
                         </div>
                         <div class="row mt-4">
                             <div class="col-lg-8"></div>
                             <div class="col-lg-4 text-right">
-                                <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">On Board</button>
                             </div>
                         </div>
                         <div class="row ">

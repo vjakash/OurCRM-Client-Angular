@@ -16,7 +16,7 @@ displayLoader=true;
 employees=[];
   constructor(private fb:FormBuilder,private serv:ServService,private toastService:ToastServiceService,private router:Router) {
 
-    this.serv.getAllUsers().subscribe((data)=>{
+    this.serv.getAllEmployees().subscribe((data)=>{
       this.displayLoader=false;
         this.employees=data['users'];
     },(err)=>{

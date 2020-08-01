@@ -4,21 +4,22 @@ import {ServService} from '../services/serv.service';
 import { ToastServiceService } from '../services/toast-service.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import {FormBuilder,FormControl, Validators} from '@angular/forms';
+
 @Component({
-  selector: 'app-updatelead',
-  templateUrl: './updatelead.component.html',
-  styleUrls: ['./updatelead.component.css']
+  selector: 'app-updatecontact',
+  templateUrl: './updatecontact.component.html',
+  styleUrls: ['./updatecontact.component.css']
 })
-export class UpdateleadComponent implements OnInit {
+export class UpdatecontactComponent implements OnInit {
   displayLoader=true;
   obj;
-  leadDetails;
+  contactDetails;
   employees=[];
   id;
   constructor(private fb:FormBuilder,private serv:ServService,private toastService:ToastServiceService,private router:Router,private activeRoute:ActivatedRoute) {
     
     this.id=this.activeRoute.snapshot.params.id;
-    this.leadDetails=this.fb.group({
+    this.contactDetails=this.fb.group({
       owner:this.fb.control('',[Validators.required]),
       company:this.fb.control('',[Validators.required]),
       firstName:this.fb.control('',[Validators.required]),
@@ -27,12 +28,12 @@ export class UpdateleadComponent implements OnInit {
       title:this.fb.control('',[Validators.required]),
       phone:this.fb.control(''),
       mobile:this.fb.control('',[Validators.required]),
-      leadSource:this.fb.control('',[Validators.required]),
-      leadStatus:this.fb.control('',[Validators.required]),
+      contactSource:this.fb.control('',[Validators.required]),
       secondaryEmail:this.fb.control('',[]),
     });
-    this.serv.getLeadById(this.id).subscribe((data)=>{
-      this.obj=data['lead'][0];
+    this.serv.getContactById(this.id).subscribe((data)=>{
+      // console.log(data)
+      this.obj=data['contact'][0];
       delete this.obj['_id'];
       delete this.obj['ownerName'];
       delete this.obj['createdOn'];
@@ -41,7 +42,7 @@ export class UpdateleadComponent implements OnInit {
         this.displayLoader=false;
         this.employees=data['users'];
         this.obj['owner']=this.employees.findIndex(item=>item.email===this.obj['owner']);
-        this.leadDetails.setValue(this.obj);
+        this.contactDetails.setValue(this.obj);
       },(err)=>{
         this.displayLoader=false;
         console.log(err);
@@ -55,21 +56,21 @@ export class UpdateleadComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  updateLead(){
-    if(this.leadDetails.valid){
+  updateContact(){
+    if(this.contactDetails.valid){
       this.displayLoader=true;
-      this.leadDetails.value.ownerName=this.employees[this.leadDetails.value.owner].firstName+" "+this.employees[this.leadDetails.value.owner].lastName;
-      this.leadDetails.value.owner=this.employees[this.leadDetails.value.owner].email;
-      this.leadDetails.value['leadId']=this.id;
+      this.contactDetails.value.ownerName=this.employees[this.contactDetails.value.owner].firstName+" "+this.employees[this.contactDetails.value.owner].lastName;
+      this.contactDetails.value.owner=this.employees[this.contactDetails.value.owner].email;
+      this.contactDetails.value['contactId']=this.id;
       // console.log(this.leadDetails.value);
       // console.log("createLead function",this.leadDetails);
-      this.serv.updateLead(this.leadDetails.value).subscribe((data)=>{
+      this.serv.updateContact(this.contactDetails.value).subscribe((data)=>{
         this.displayLoader=false;
         this.showSuccess(data['message']);
-        this.router.navigate(['/dashboard/leads']);
+        this.router.navigate(['/dashboard/contacts']);
       },(err)=>{
         this.displayLoader=false;
-        console.log(err)
+        console.log(err);
         this.showDanger(err.error['message']);
       });
     }else{

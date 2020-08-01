@@ -11,12 +11,21 @@ import { HomeComponent } from './home/home.component';
 import { LeadsComponent } from './leads/leads.component';
 import { AddleadComponent } from './addlead/addlead.component';
 import { UpdateleadComponent } from './updatelead/updatelead.component';
+import { LoginGuardGuard } from './guards/login-guard.guard';
+import { ContactsComponent } from './contacts/contacts.component';
+import { AddcontactComponent } from './addcontact/addcontact.component';
+import { UpdatecontactComponent } from './updatecontact/updatecontact.component';
+import { AdduserComponent } from './adduser/adduser.component';
+import { UsersGuardGuard } from './guards/users-guard.guard';
+import { UsersComponent } from './users/users.component';
+import { UsershomeComponent } from './usershome/usershome.component';
 
 
 const routes: Routes = [{
   path:'',
   // path:'dashboard',
-  component:LoginComponent
+  component:LoginComponent,
+  canActivate:[LoginGuardGuard]
 },{
   path:'forgotpassword',
   component:ForgotpasswordComponent
@@ -40,12 +49,32 @@ const routes: Routes = [{
     path:'leads',
     component:LeadsComponent
   },{
-  path:'addlead',
-  component:AddleadComponent
-},{
-  path:'updatelead/:id',
-  component:UpdateleadComponent
-}]
+    path:'addlead',
+    component:AddleadComponent
+  },{
+    path:'updatelead/:id',
+    component:UpdateleadComponent
+  },{
+    path:'contacts',
+    component:ContactsComponent
+  },{
+    path:'addcontact',
+    component:AddcontactComponent
+  },{
+    path:'updatecontact/:id',
+    component:UpdatecontactComponent
+  },{
+    path:'users',
+    component:UsershomeComponent,
+    children:[{
+      path:'',
+      component:UsersComponent,
+    },{
+      path:'adduser',
+      component:AdduserComponent,
+    }],
+    canActivate:[UsersGuardGuard]
+  }]
 }];
 
 @NgModule({

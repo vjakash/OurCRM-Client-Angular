@@ -1,7 +1,7 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-12 px-md-4">
     <app-toasts></app-toasts>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Leads</h1>
+        <h1 class="h2">Contacts</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
             <!-- <div class="btn-group mr-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -18,14 +18,14 @@
             <div class="col-lg-1 ">
                 <div class="row">
                     <div class="col-lg-6"> </div>
-                    <div class="col-lg-6"> <input type="checkbox" [checked]="selectAllLeads" (change)="selectAllLeads=!selectAllLeads;selectAll()" /></div>
+                    <div class="col-lg-6"> <input type="checkbox" [checked]="selectAllContacts" (change)="selectAllContacts=!selectAllContacts;selectAll()" /></div>
                 </div>
             </div>
             <div class="col-lg-9"></div>
             <div class="col-lg-2 text-right">
                 <div class="btn-group mr-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" routerLink="/dashboard/addlead">Add</button>
-                    <button type="button" class="btn btn-sm" (click)="deleteLead()" [ngClass]="{'btn-danger':selectedLead.length!==0,'btn-outline-secondary':selectedLead.length===0}" [disabled]="selectedLead.length===0">Delete</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" routerLink="/dashboard/addcontact">Add</button>
+                    <button type="button" class="btn btn-sm" (click)="deleteContact()" [ngClass]="{'btn-danger':selectedContact.length!==0,'btn-outline-secondary':selectedContact.length===0}" [disabled]="selectedContact.length===0">Delete</button>
                 </div>
                 <!-- <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
               <span data-feather="calendar"></span>
@@ -51,23 +51,23 @@
             </div>
         </div>
     </div>
-    <div class="container" *ngIf="leads.length===0 && !displayLoader">
+    <div class="container" *ngIf="contacts.length===0 && !displayLoader">
         <div class="row">
             <div class="col-lg-12 text-center">
-                <p>No Leads to display</p>
+                <p>No Contacts to display</p>
             </div>
         </div>
     </div>
     <ng-container *ngIf="!displayLoader">
-        <div class="container-fluid" *ngFor="let item of leads; let i=index">
+        <div class="container-fluid" *ngFor="let item of contacts; let i=index">
             <div class="row" [ngClass]="{'leadSelected':item.selected}">
                 <div class="col-lg-1 p-3">
                     <div class="row">
                         <div class="col-lg-6">
-                            <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button>
+                            <span style="cursor: pointer;" [routerLink]="['/dashboard/updatecontact/',item['_id']]"><fa-icon [icon]="faPencilAlt" ></fa-icon></span>
                         </div>
                         <div class="col-lg-6">
-                            <input type="checkbox" [checked]="item.selected" class="leads" (change)="item.selected=!item.selected; getSelectedLeads()" [value]="item['_id']" />
+                            <input type="checkbox" [checked]="item.selected" class="leads" (change)="item.selected=!item.selected; getSelectedContacts()" [value]="item['_id']" />
                         </div>
                     </div>
 
@@ -89,32 +89,30 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
-                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Company: </span>{{item.company}} <span class="text-muted font-weight-normal">| Title: </span> {{item.title}} <span class="text-muted font-weight-normal"> | Lead Source : </span>{{item.leadSource}}
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Company: </span>{{item.company}} <span class="text-muted font-weight-normal">| Title: </span> {{item.title}} <span class="text-muted font-weight-normal"> | Contact Source : </span>{{item.contactSource}}
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-2 text-left">
-                    <p class="text-muted">Status</p>
-                    <p *ngIf="!updateLeadStatus||activeLead!==item['_id']">{{item.leadStatus}}&nbsp;&nbsp; <button class="editbtn" (click)="updateLeadStatus=!updateLeadStatus;activeLead=item['_id'];activeLeadStatus=item.leadStatus" [disabled]="(item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee') || (item.leadStatus==='Completed'  || item.leadStatus==='Cancelled')"><fa-icon [icon]="faPencilAlt" ></fa-icon></button></p>
+                    <!-- <p class="text-muted">Status</p>
+                    <p *ngIf="!updateLeadStatus||activeLead!==item['_id']">{{item.leadStatus}}&nbsp;&nbsp; <span style="cursor: pointer;" (click)="updateLeadStatus=!updateLeadStatus;activeLead=item['_id'];activeLeadStatus=item.leadStatus"><fa-icon [icon]="faPencilAlt" ></fa-icon></span></p>
                     <div class="input-group mb-3" *ngIf="updateLeadStatus&&activeLead===item['_id']">
                         <div class="input-group-prepend">
                             <button class="btn btn-sm btn-danger" (click)="updateLeadStatus=!updateLeadStatus;activeLead='';activeLeadStatus=''">x</button>
-                            <!-- {{activeLeadStatus}}{{item.leadStatus}} -->
                         </div>
                         <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="activeLeadStatus">
                             <option value="New" [selected]="item.leadStatus==='New'">New</option>
                             <option value="Contacted" [selected]="item.leadStatus==='Contacted'">Contacted</option>
                             <option value="Lost" [selected]="item.leadStatus==='Lost'">Lost</option>
+                            <option value="Cancelled" [selected]="item.leadStatus==='Cancelled'">Cancelled</option>
                             <option value="Qualified" [selected]="item.leadStatus==='Qualified'">Qualified</option>
                             <option value="Confirmed" [selected]="item.leadStatus==='Confirmed'">Confirmed</option>
-                            <option value="Cancelled" [selected]="item.leadStatus==='Cancelled'">Cancelled</option>
-                            <option value="Completed" [selected]="item.leadStatus==='Completed'" [disabled]="serv.getUserData().userType==='employee'">Completed</option>
                         </select>
                         <div class="input-group-append">
                             <button class="btn btn-sm btn-success" (click)="updateStatus(i,item['_id'],activeLeadStatus,item.leadStatus);"><fa-icon [icon]="faCheck" ></fa-icon></button>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="col-lg-3 text-right">
                     <h5 class="mt-2" style="color: #515053;">Owner: {{item.ownerName|titlecase}}</h5>

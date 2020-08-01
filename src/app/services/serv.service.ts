@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http'
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
+import { JsonPipe } from '@angular/common';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ServService {
-userType='';
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private router:Router) { }
   login(credentials){
     return this.http.post(`${environment.serv_url}/login`,credentials);
   }
@@ -66,6 +68,42 @@ deleteLead(id){
     }),
   });
 }
+//contacts
+getAllContacts(){
+  return this.http.get(`${environment.serv_url}/listcontacts`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+getContactById(id){
+  return this.http.get(`${environment.serv_url}/listcontacts/${id}`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+createContact(details){
+  return this.http.post(`${environment.serv_url}/createcontact`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+updateContact(details){
+  return this.http.put(`${environment.serv_url}/updatecontact`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+deleteContact(id){
+  return this.http.delete(`${environment.serv_url}/deletecontact/${id}`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
 //users
 getAllUsers(){
   return this.http.get(`${environment.serv_url}/getallusers`,{
@@ -74,25 +112,79 @@ getAllUsers(){
     }),
   });
 }
+getAllEmployees(){
+  return this.http.get(`${environment.serv_url}/getallusers/employees`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+getAllManagers(){
+  return this.http.get(`${environment.serv_url}/getallusers/managers`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+addUser(details){
+  return this.http.post(`${environment.serv_url}/register/adduser`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    })
+  });
+}
+updateAccesRights(details){
+  return this.http.put(`${environment.serv_url}/updateaccessrights`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+deleteUser(id){
+  return this.http.delete(`${environment.serv_url}/deleteuser/${id}`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+
+
+
+//localStorage
   setToken(token){
-    localStorage.setItem("token",token);
+    localStorage.setItem("token",window.btoa(token));
   }
   getToken(){
-    return localStorage.getItem('token')
+    return window.atob(localStorage.getItem('token'))
   }
   removeToken(){
     localStorage.removeItem('token');
   }
   setEmail(email){
-    localStorage.setItem("email",email);
+    localStorage.setItem("email",window.btoa(email));
   }
   getEmail(){
-    return localStorage.getItem('email')
+    return window.atob(localStorage.getItem('email'))
   }
   removeEmail(){
     localStorage.removeItem('email');
   }
-
+  setUserData(details){
+    details=JSON.stringify(details);
+      localStorage.setItem('userData',window.btoa(details));
+  }
+  getUserData(){
+    return JSON.parse(window.atob(localStorage.getItem('userData')));
+  }
+  removeUserDetails(){
+    localStorage.removeItem('userData');
+  }
+  signOut(){
+    this.removeToken();
+    this.removeEmail();
+    this.removeUserDetails();
+    this.router.navigate(['/']);
+  }
 
 
 }

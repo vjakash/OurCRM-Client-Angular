@@ -1,0 +1,127 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-12 px-md-4">
+    <app-toasts></app-toasts>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2 font-weight-bolder">Add User</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <button class="btn btn-secondary" routerLink="/dashboard/users">Cancel</button>&nbsp;&nbsp;&nbsp;
+            <button class="btn btn-primary" (click)="register()">save</button>
+        </div>
+    </div>
+    <div class="container" *ngIf="displayLoader">
+        <div class="row mt-5">
+            <div class="col-lg-12 mt-5 text-center">
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <form [formGroup]="details" (ngSubmit)="register()">
+            <div class="row" *ngIf="!displayLoader">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">email</label> Email-ID
+                            <input type="email" id="inputEmail" formControlName="email" class="form-control mb-3" placeholder="Email address">
+                        </div>
+                        <div class="col-lg-2"></div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">firstName</label> First Name
+                            <input type="text" id="firstName" formControlName="firstName" class="form-control mb-3" placeholder="First Name">
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">lastName</label> Last Name
+                            <input type="text" id="lastName" formControlName="lastName" class="form-control mb-3" placeholder="Last Name">
+                        </div>
+
+                    </div>
+                    <!-- <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">password</label> Password
+                                <input type="password" id="password" formControlName="password" class="form-control mb-3" placeholder="Enter Password">
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">confirmPassword</label>Confirm Password
+                                <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control mb-3" placeholder="Confirm Password">
+                            </div>
+                        </div> -->
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">mobile</label>Mobile number
+                            <input type="text" id="mobile" formControlName="mobile" class="form-control mb-3" placeholder="Mobile number">
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">phone</label> Phone
+                            <input type="text" id="phone" formControlName="phone" class="form-control mb-3" placeholder="Phone number">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">userType</label> User Type
+                            <div class="input-group mb-3">
+                                <select class="custom-select" id="inputGroupSelect01" formControlName="userType">
+                                      <option value="" selected>Choose...</option>
+                                      <option value="employee" selected>Employee</option>
+                                      <option value="manager">Manager</option>
+                                      <option value="admin" [disabled]="serv.getUserData().userType!=='admin'">Admin</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">dob</label> DOB
+                            <input type="date" id="dob" formControlName="dob" class="form-control mb-3" placeholder="Phone number">
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="details.value.userType==='employee'">
+                        <div class="col-lg-5">
+                            <label for="">Access Rights</label>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck1" value="view" checked disabled>
+                                <label class="custom-control-label" for="customCheck1">View</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck2" (click)="addAccessRights('create')" value="create">
+                                <label class="custom-control-label" for="customCheck2">Create</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck3" (click)="addAccessRights('edit')" value="edit">
+                                <label class="custom-control-label" for="customCheck3">Edit</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck4" (click)="addAccessRights('delete')" value="delete">
+                                <label class="custom-control-label" for="customCheck4">Delete</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">manager</label>Manager
+                            <div class="input-group mb-3">
+                                <select class="custom-select" id="inputGroupSelect01" formControlName="manager">
+                                      <option value="" selected>Choose...</option>
+                                      <ng-container *ngFor="let item of managers">
+                                          <option [value]="item.email" selected>{{item.firstName | titlecase}} {{item.lastName | titlecase}}</option>
+                                      </ng-container>
+                                    </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
