@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild } from '@angular/core';
 import { faPencilAlt  } from '@fortawesome/free-solid-svg-icons';
 import { faCheck   } from '@fortawesome/free-solid-svg-icons';
 import {ServService} from '../services/serv.service';
 import { ToastServiceService } from '../services/toast-service.service';
 import { Router } from '@angular/router';
 import {FormBuilder,FormControl, Validators} from '@angular/forms';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { build$ } from 'protractor/built/element';
 
 @Component({
@@ -13,6 +14,7 @@ import { build$ } from 'protractor/built/element';
   styleUrls: ['./leads.component.css']
 })
 export class LeadsComponent implements OnInit {
+  @ViewChild('content') content: any;
   faPencilAlt = faPencilAlt;
   faCheck=faCheck;
   leads=[];
@@ -22,7 +24,10 @@ export class LeadsComponent implements OnInit {
   updateLeadStatus=false;
   activeLeadStatus='';
   activeLead='';
-  constructor(private fb:FormBuilder,public serv:ServService,private toastService:ToastServiceService,private router:Router) { 
+  activeIndex;
+  closeResult = '';
+  revenue=null;
+  constructor(private modalService: NgbModal,private fb:FormBuilder,public serv:ServService,private toastService:ToastServiceService,private router:Router) { 
     this.loadLeads();
   }
 
@@ -71,26 +76,61 @@ export class LeadsComponent implements OnInit {
     }
   }
   updateStatus(index, leadId, leadStatus,currentStatus){
+    this.activeIndex=index;
     if(leadStatus!==currentStatus){
-        // this.displayLoader=true;
-        let oldStatus=this.leads[index]['leadStatus'];
-        this.leads[index]['leadStatus']=leadStatus;
-        this.updateLeadStatus=!this.updateLeadStatus;
-        this.activeLead='';
-        this.activeLeadStatus='';
-        this.serv.updateLeadStatus({ leadId, leadStatus}).subscribe((data)=>{
-             this.showSuccess(data['message']);
-              // this.loadLeads();
-        },(err)=>{
-          console.log(err);
-              this.showDanger(err.error['message']);
-              this.leads[index]['leadStatus']=oldStatus;
-          })
+      if(leadStatus==='Confirmed'){
+        this.open(this.content);
+        return;
+      }
+        this.sendStatus(index, leadId, leadStatus,currentStatus);
     }else{
       this.activeLead='';
       this.activeLeadStatus='';
+      this.activeIndex=null;
+      this.revenue==null;
     }
-   
+  }
+  sendStatus(index, leadId, leadStatus,currentStatus){
+      // this.displayLoader=true;
+      let oldStatus=this.leads[index]['leadStatus'];
+      this.leads[index]['leadStatus']=leadStatus;
+      this.updateLeadStatus=!this.updateLeadStatus;
+      this.activeLead='';
+      this.activeLeadStatus='';
+      this.activeIndex=null;
+      this.serv.updateLeadStatus({ leadId, leadStatus}).subscribe((data)=>{
+          this.showSuccess(data['message']);
+            this.loadLeads();
+      },(err)=>{
+        console.log(err);
+            this.showDanger(err.error['message']);
+            this.leads[index]['leadStatus']=oldStatus;
+        })
+  }
+  leadConfirmed(){
+    let index =this.activeIndex;
+    let leadId=this.activeLead;
+    let leadStatus=this.activeLeadStatus;
+    if(this.revenue!==0){
+      let oldStatus=this.leads[index]['leadStatus'];
+      this.leads[index]['leadStatus']=leadStatus;
+      this.updateLeadStatus=!this.updateLeadStatus;
+      this.activeLead='';
+      this.activeLeadStatus='';
+      this.activeIndex=null;
+      this.serv.confirmLead({ leadId, leadStatus ,revenue:this.revenue}).subscribe((data)=>{
+          this.showSuccess(data['message']);
+            this.loadLeads();
+            this.revenue=null;
+      },(err)=>{
+        console.log(err);
+            this.showDanger(err.error['message']);
+            this.leads[index]['leadStatus']=oldStatus;
+            this.revenue=null;
+        })
+    }else{
+      this.open(this.content);
+    }
   }
   showStandard(msg) {
     this.toastService.show(msg);
@@ -102,5 +142,22 @@ export class LeadsComponent implements OnInit {
   
   showDanger(msg) {
     this.toastService.show(msg, { classname: 'bg-danger text-light', delay: 8000 });
+  }
+  open(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
   }
 }

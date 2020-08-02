@@ -1,0 +1,71 @@
+<div class="container-fluid bg-dark text-white">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h3>Order Verification</h3>
+        </div>
+    </div>
+</div>
+<div class="container mt-5" *ngIf="displayLoader">
+    <div class="row mt-5">
+        <div class="col-lg-12 text-center mt-5">
+            <div class="lds-roller">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-5" *ngIf="!displayLoader && message==='' && (leadData.leadStatus==='Cancelled' || leadData.leadStatus==='Completed')">
+    <div class="row mt-5">
+        <div class="col-lg-12 mt-5 text-center">
+            <h1>Link Expired...please contact our employee</h1>
+        </div>
+    </div>
+</div>
+<div class="container mt-5" *ngIf="!displayLoader && message!==''">
+    <div class="row mt-5">
+        <div class="col-lg-12 mt-5 text-center">
+            <h1> {{message}} </h1>
+        </div>
+    </div>
+</div>
+<ng-container *ngIf=" !displayLoader && leadData.leadStatus!=='Cancelled' ">
+    <ng-container *ngIf="leadData.leadStatus!=='Completed'">
+        <div class="container" *ngIf="message===''">
+            <div class="row mt-3">
+                <div class="col-lg-12 text-center">
+                    <h1>Please this Order</h1>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-9">
+                    <h3>Details of lead</h3>
+                    <h5>Lead Owner Email: {{leadData.owner}}</h5>
+                    <h5>Lead Owner Name: {{leadData.ownerName}}</h5>
+                    <h5>First Name : {{leadData.firstName}}</h5>
+                    <h5>Last Name : {{leadData.lastName}}</h5>
+                    <h5>Email : {{leadData.email}}</h5>
+                    <h5>Company : {{leadData.company}}</h5>
+                    <h5>Title : {{leadData.title}}</h5>
+                    <h5>Phone Number : {{leadData.phone}}</h5>
+                    <h5>Lead Status : {{leadData.leadStatus}}</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h1>Price: $ {{leadData.qoutedRevenue}}</h1><br>
+                    <button class="btn btn-secondary" (click)="cancel()">Cancel Order</button> &nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-primary" (click)="confirm()">Confirm Order</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+</ng-container>

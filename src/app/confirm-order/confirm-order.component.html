@@ -1,0 +1,72 @@
+<div class="container-fluid bg-dark text-white">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h3>Order Confirmation</h3>
+        </div>
+    </div>
+</div>
+<div class="container mt-5" *ngIf="displayLoader">
+    <div class="row mt-5">
+        <div class="col-lg-12 text-center mt-5">
+            <div class="lds-roller">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-5" *ngIf="!displayLoader && message==='' && (leadData.leadStatus==='Cancelled' || leadData.orderConfirmed)">
+    <div class="row mt-5">
+        <div class="col-lg-12 mt-5 text-center">
+            <h1>Link Expired...please contact our employee</h1>
+        </div>
+    </div>
+</div>
+<div class="container mt-5" *ngIf="!displayLoader && message!==''">
+    <div class="row mt-5">
+        <div class="col-lg-12 mt-5 text-center">
+            <h1> {{message}} </h1>
+        </div>
+    </div>
+</div>
+<ng-container *ngIf=" !displayLoader && leadData.leadStatus!=='Cancelled' ">
+    <ng-container *ngIf="!leadData.orderConfirmed">
+        <div class="container" *ngIf="message===''">
+            <div class="row mt-3">
+                <div class="col-lg-12 text-center">
+                    <h1>Please Confirm your Order</h1>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-9">
+                    <p>Thank you for choosing our service,please confirm your order</p>
+                    <h3>Terms & Conditions</h3>
+                    <ul>
+                        <li>jgchchytdyrdyrdy</li>
+                        <li>jgchchytdyrdyrdy</li>
+                        <li>jgchchytdyrdyrdy</li>
+                        <li>jgchchytdyrdyrdy</li>
+                        <li>jgchchytdyrdyrdy</li>
+                        <li>jgchchytdyrdyrdy</li>
+                        <li>jgchchytdyrdyrdy</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h1>Price: $ {{leadData.qoutedRevenue}}</h1><br>
+                    <button class="btn btn-secondary" (click)="cancel()">Cancel Order</button> &nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-primary" (click)="confirm()">Confirm Order</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+</ng-container>

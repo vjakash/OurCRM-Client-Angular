@@ -19,6 +19,9 @@ import { AdduserComponent } from './adduser/adduser.component';
 import { UsersGuardGuard } from './guards/users-guard.guard';
 import { UsersComponent } from './users/users.component';
 import { UsershomeComponent } from './usershome/usershome.component';
+import { ProfileComponent } from './profile/profile.component';
+import { ConfirmOrderComponent } from './confirm-order/confirm-order.component';
+import { ManagerClosingLeadComponent } from './manager-closing-lead/manager-closing-lead.component';
 
 
 const routes: Routes = [{
@@ -45,6 +48,9 @@ const routes: Routes = [{
   children:[{
     path:'',
     component:HomeComponent
+  },{
+    path:'profile',
+    component:ProfileComponent
   },{
     path:'leads',
     component:LeadsComponent
@@ -75,6 +81,13 @@ const routes: Routes = [{
     }],
     canActivate:[UsersGuardGuard]
   }]
+},{
+  path:'confirmorder/:company/:id',
+  component:ConfirmOrderComponent
+},{
+  path:'verifyorder/:company/:id',
+  component:ManagerClosingLeadComponent,
+  canActivate:[AuthGuard]
 }];
 
 @NgModule({

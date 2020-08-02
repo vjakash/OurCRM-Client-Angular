@@ -23,12 +23,14 @@ export class UsersComponent implements OnInit {
     'admins':[],
   };
   changeAccessRights=true;
+  indexOfSelectedManager=0;
   displayLoader=true;
   selectedLead=[];
   selectAllLeads=false;
-  updateLeadStatus=false;
-  activeLeadStatus='';
+  editUserType=false;
+  activeUserType='';
   activeUser='';
+  activeUserForAccessRights='';
   constructor(private fb:FormBuilder,public serv:ServService,private toastService:ToastServiceService,private router:Router) { 
     this.loadUsers();
   }
@@ -47,6 +49,13 @@ export class UsersComponent implements OnInit {
       // console.log(this.users.employees)
       this.users.managers=data['users'].reverse().filter(lead=>{
         if(lead.userType==='manager'){
+          lead.teamRevenue=0;
+          lead.team=data['users'].filter(user=>{
+            if(user.manager=== lead.email){
+              lead.teamRevenue+=user.totalRevenue;
+              return user;
+            }
+          });
           lead.selected=false;
           return lead
         }
@@ -144,6 +153,30 @@ export class UsersComponent implements OnInit {
       oldAccessRights.push(newAccess);
     }
     // console.log(oldAccessRights)
+  }
+  updateUserType(index, userId, userType,currentType,activeTab){
+    let oldType=currentType;
+    if(userType!==currentType){
+      // this.displayLoader=true;
+      console.log(this.users[activeTab][index])
+      this.users[activeTab][index]['userType']=userType;
+      this.editUserType=!this.editUserType;
+      this.activeUserForAccessRights='';
+      this.activeUserType='';
+      this.serv.updateUserType({ userId, userType}).subscribe((data)=>{
+           this.showSuccess(data['message']);
+            this.loadUsers();
+      },(err)=>{
+        console.log(err);
+            this.showDanger(err.error['message']);
+            this.users[activeTab][index]['userType']=oldType;
+            // this.leads[index]['leadStatus']=oldStatus;
+        })
+  }else{
+    this.activeUserForAccessRights='';
+    this.activeUserType='';
+    this.editUserType=!this.editUserType;
+  }
   }
   showStandard(msg) {
     this.toastService.show(msg);

@@ -61,8 +61,44 @@ updateLeadStatus(details){
     }),
   });
 }
+confirmLead(details){
+  return this.http.put(`${environment.serv_url}/leadconfirmed`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
 deleteLead(id){
   return this.http.delete(`${environment.serv_url}/deletelead/${id}`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+//final-part
+confirmOrder(details){
+  return this.http.post(`${environment.serv_url}/orderconfirmed`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+cancelOrder(details){
+  return this.http.post(`${environment.serv_url}/ordercancelled`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+managerConfirmed(details){
+  return this.http.post(`${environment.serv_url}/managerconfirmed`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+managerCancelled(details){
+  return this.http.post(`${environment.serv_url}/managercancelled`,details,{
     headers: new HttpHeaders({
       authorization: this.getToken(),
     }),
@@ -140,6 +176,20 @@ updateAccesRights(details){
     }),
   });
 }
+updateUserType(details){
+  return this.http.put(`${environment.serv_url}/updateusertype`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+updateProfile(details){
+  return this.http.put(`${environment.serv_url}/updateprofile`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
 deleteUser(id){
   return this.http.delete(`${environment.serv_url}/deleteuser/${id}`,{
     headers: new HttpHeaders({
@@ -147,7 +197,14 @@ deleteUser(id){
     }),
   });
 }
-
+changePassword(details){
+  details.email=this.getEmail();
+  return this.http.post(`${environment.serv_url}/changepassword`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    })
+  });
+}
 
 
 //localStorage

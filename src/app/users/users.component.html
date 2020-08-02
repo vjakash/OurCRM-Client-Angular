@@ -13,7 +13,10 @@
             </span>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
-
+            <div class="btn-group mr-2">
+                <button type="button" class="btn btn-outline-primary" routerLink="/dashboard/users/adduser">Add User</button>
+                <button type="button" class="btn " (click)="deleteLead()" [ngClass]="{'btn-danger':selectedLead.length!==0,'btn-outline-secondary':selectedLead.length===0}" [disabled]="selectedLead.length===0">Delete</button>
+            </div>
             <!-- <div class="btn-group mr-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
                 <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
@@ -33,17 +36,12 @@
                 </div>
             </div>
             <div class="col-lg-9"></div>
-            <div class="col-lg-2 text-right">
-                <!-- <button class="btn btn-primary">Add User</button> -->
+            <!-- <div class="col-lg-2 text-right">
                 <div class="btn-group mr-2">
                     <button type="button" class="btn btn-outline-primary" routerLink="/dashboard/users/adduser">Add User</button>
                     <button type="button" class="btn " (click)="deleteLead()" [ngClass]="{'btn-danger':selectedLead.length!==0,'btn-outline-secondary':selectedLead.length===0}" [disabled]="selectedLead.length===0">Delete</button>
                 </div>
-                <!-- <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-              <span data-feather="calendar"></span>
-              This week
-            </button> -->
-            </div>
+            </div> -->
         </div>
         <hr>
     </div>
@@ -123,8 +121,8 @@
                     </div>
 
                 </div>
-                <!-- <div class="col-lg-1 p-3"></div> -->
-                <div class="col-lg-6">
+
+                <div class="col-lg-5">
                     <div class="row">
                         <div class="col-lg-12">
                             <h3>{{item.firstName|titlecase}} {{item.lastName|titlecase}}</h3>
@@ -144,11 +142,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 text-left">
+                <div class="col-lg-2 text-center">
                     <p class="text-muted">Total Revenue</p>
                     <h6>{{item.totalRevenue |currency}}</h6>
                 </div>
-                <div class="col-lg-3 text-left">
+                <div class="col-lg-2 text-left">
                     <p class="text-muted">Access Rights
                         <button class="editbtn" (click)="changeAccessRights=!changeAccessRights;activeUser=item['_id']"><fa-icon [icon]="faPencilAlt"></fa-icon></button>
                     </p>
@@ -187,9 +185,26 @@
 
                             <div class="col-lg-2"> <button class="btn-sm btn-success" (click)="updateUpdateAccess(item['_id'],item.accessRights)"> <fa-icon [icon]="faCheck"></fa-icon></button></div>
                         </div>
-
-
                     </ng-container>
+                </div>
+                <div class="col-lg-2 ">
+                    <p class="text-muted">Employee Type</p>
+                    <p *ngIf="activeUserForAccessRights!==item['_id']">{{item.userType | titlecase}}&nbsp;&nbsp; <button class="editbtn" (click)="editUserType=!editUserType;activeUserType=item.userType;activeUserForAccessRights=item['_id']"><fa-icon [icon]="faPencilAlt" ></fa-icon></button></p>
+                    <div class="input-group mb-3" *ngIf="editUserType && activeUserForAccessRights===item['_id']">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-sm btn-danger" (click)="editUserType=!editUserType;activeUserType='';activeUserForAccessRights=''">x</button>
+                            <!-- {{activeLeadStatus}}{{item.leadStatus}} -->
+                        </div>
+
+                        <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="activeUserType">
+                                <option value="employee" selected>Employee</option>
+                                <option value="manager" >Manager</option>
+                                <option value="admin" >Admin</option>
+                            </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-sm btn-success" (click)="updateUserType(i,item['_id'],activeUserType,item.userType,'employees');"><fa-icon [icon]="faCheck" ></fa-icon></button>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -197,44 +212,101 @@
         </div>
     </ng-container>
     <ng-container *ngIf="!displayLoader && active==='managers'">
-        <div class="container-fluid" *ngFor="let item of users['managers']; let i=index">
-            <div class="row" [ngClass]="{'leadSelected':item.selected}">
-                <div class="col-lg-1 p-3">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <!-- <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button> -->
-                        </div>
-                        <div class="col-lg-6">
-                            <input type="checkbox" [checked]="item.selected" class="leads" (change)="item.selected=!item.selected; getSelectedUsers()" [value]="item['_id']" />
-                        </div>
-                    </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6" style="height:70vh;overflow: auto;">
+                    <ng-container *ngFor="let item of users['managers']; let i=index">
+                        <div class="row" [ngClass]="{'leadSelected':item.selected}">
+                            <div class="col-lg-1 p-3">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <!-- <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button> -->
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="checkbox" [checked]="item.selected" class="leads" (change)="item.selected=!item.selected; getSelectedUsers()" [value]="item['_id']" />
+                                    </div>
+                                </div>
 
-                </div>
-                <!-- <div class="col-lg-1 p-3"></div> -->
-                <div class="col-lg-6">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h3>{{item.firstName|titlecase}} {{item.lastName|titlecase}}</h3>
+                            </div>
+                            <!-- <div class="col-lg-1 p-3"></div> -->
+                            <div class="col-lg-8">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h3 style="cursor: pointer;" (click)="indexOfSelectedManager=i">{{item.firstName|titlecase}} {{item.lastName|titlecase}}</h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+item.phone">{{item.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+item.email">{{item.email}}</a>
+                                            <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                            <a [href]="'tel:'+item.mobile">{{item.mobile}}</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 ">
+                                <p class="text-muted">Employee Type</p>
+                                <p *ngIf="activeUserForAccessRights!==item['_id']">{{item.userType | titlecase}}&nbsp;&nbsp; <button class="editbtn" (click)="editUserType=!editUserType;activeUserType=item.userType;activeUserForAccessRights=item['_id']"><fa-icon [icon]="faPencilAlt" ></fa-icon></button></p>
+                                <div class="input-group mb-3" *ngIf="editUserType && activeUserForAccessRights===item['_id']">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-sm btn-danger" (click)="editUserType=!editUserType;activeUserType='';activeUserForAccessRights=''">x</button>
+                                        <!-- {{activeLeadStatus}}{{item.leadStatus}} -->
+                                    </div>
+
+                                    <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="activeUserType">
+                                            <option value="employee" selected>Employee</option>
+                                            <option value="manager" >Manager</option>
+                                            <option value="admin" >Admin</option>
+                                        </select>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm btn-success" (click)="updateUserType(i,item['_id'],activeUserType,item.userType,'managers');"><fa-icon [icon]="faCheck" ></fa-icon></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-lg-2 text-left">
+            
+                            </div>
+                            <div class="col-lg-3 text-right">
+            
+                            </div> -->
                         </div>
-                    </div>
+                        <hr>
+                    </ng-container>
+                </div>
+                <div class="col-lg-6" style="border-left: 1px solid black;height:70vh;overflow: auto;">
                     <div class="row">
                         <div class="col-lg-12">
-                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+item.phone">{{item.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+item.email">{{item.email}}</a>
+                            <h1>{{users['managers'][indexOfSelectedManager].firstName|titlecase}} {{users['managers'][indexOfSelectedManager].lastName|titlecase}}</h1>
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+users['managers'][indexOfSelectedManager].phone">{{users['managers'][indexOfSelectedManager].phone}} </a><span class="text-muted font-weight-normal"> | Email: </span>
+                                <a [href]="'mailto:'+users['managers'][indexOfSelectedManager].email">{{users['managers'][indexOfSelectedManager].email}}</a>
                                 <span class="text-muted font-weight-normal"> | Mobile: </span>
-                                <a [href]="'tel:'+item.mobile">{{item.mobile}}</a>
+                                <a [href]="'tel:'+users['managers'][indexOfSelectedManager].mobile">{{users['managers'][indexOfSelectedManager].mobile}}</a>
                             </p>
+                            <!-- <br> -->
+                            <h3>Team Revenue: {{users['managers'][indexOfSelectedManager].teamRevenue |currency}}</h3>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-lg-12">
+                            <h2 class="font-weight-bold" style="text-decoration: underline;">Team</h2>
+                            <ul *ngFor="let teamMember of users['managers'][indexOfSelectedManager].team">
+                                <li>
+                                    <h3> {{teamMember.firstName |titlecase}} {{teamMember.lastName |titlecase}}</h3>
+                                    <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+teamMember.phone">{{teamMember.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+teamMember.email">{{teamMember.email}}</a>
+                                        <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                        <a [href]="'tel:'+teamMember.mobile">{{teamMember.mobile}}</a>
+                                    </p>
+                                    <p class="font-weight-bold"><span class="text-muted font-weight-normal">Total Revenue gained : </span>{{teamMember.totalRevenue |currency}}</p>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 text-left">
 
-                </div>
-                <div class="col-lg-3 text-right">
-
-                </div>
 
             </div>
-            <hr>
+
         </div>
     </ng-container>
     <ng-container *ngIf="!displayLoader && active==='admins' && serv.getUserData().userType==='admin'">
@@ -246,7 +318,6 @@
                             <!-- <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button> -->
                         </div>
                         <div class="col-lg-6">
-                            {{item.selected}}
                             <input type="checkbox" [checked]="item.selected && !item.isRootUser" class="leads" (change)="item.selected=!item.selected; getSelectedUsers()" [value]="item['_id']" />
                         </div>
                     </div>
@@ -268,12 +339,31 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 text-left">
+                <div class="col-lg-2 ">
+                    <p class="text-muted">Employee Type</p>
+                    <p *ngIf="activeUserForAccessRights!==item['_id']">{{item.userType | titlecase}}&nbsp;&nbsp; <button class="editbtn" (click)="editUserType=!editUserType;activeUserType=item.userType;activeUserForAccessRights=item['_id']"><fa-icon [icon]="faPencilAlt" ></fa-icon></button></p>
+                    <div class="input-group mb-3" *ngIf="editUserType && activeUserForAccessRights===item['_id']">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-sm btn-danger" (click)="editUserType=!editUserType;activeUserType='';activeUserForAccessRights=''">x</button>
+                            <!-- {{activeLeadStatus}}{{item.leadStatus}} -->
+                        </div>
+
+                        <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="activeUserType">
+                                <option value="employee" selected>Employee</option>
+                                <option value="manager" >Manager</option>
+                                <option value="admin" >Admin</option>
+                            </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-sm btn-success" (click)="updateUserType(i,item['_id'],activeUserType,item.userType,'admins');"><fa-icon [icon]="faCheck" ></fa-icon></button>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-lg-2 text-left">
 
                 </div>
                 <div class="col-lg-3 text-right">
 
-                </div>
+                </div> -->
 
             </div>
             <hr>

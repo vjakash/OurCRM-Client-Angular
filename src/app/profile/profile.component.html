@@ -1,0 +1,135 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-12 px-md-4">
+    <app-toasts></app-toasts>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2 font-weight-bolder">Profile</h1>
+        <div class="btn-toolbar mb-2 mb-md-0" *ngIf="!edit">
+            <button class="btn btn-primary" (click)="edit=true">Edit</button>&nbsp;&nbsp;&nbsp;
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0" *ngIf="edit">
+            <button class="btn btn-secondary" (click)="edit=false">Cancel</button>&nbsp;&nbsp;&nbsp;
+            <button class="btn btn-primary" (click)="updateProfile();">save</button>
+        </div>
+    </div>
+    <div class="container" *ngIf="displayLoader">
+        <div class="row mt-5">
+            <div class="col-lg-12 mt-5 text-center">
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" *ngIf="!displayLoader">
+        <h3>Personal Information</h3>
+        <form [formGroup]="details" (ngSubmit)="updateProfile()">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">email</label> Email-ID
+                            <input type="email" id="inputEmail" formControlName="email" [readOnly]="!edit" class="form-control mb-3" placeholder="Email address">
+                        </div>
+                        <div class="col-lg-2"></div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">firstName</label> First Name
+                            <input type="text" id="firstName" formControlName="firstName" [readOnly]="!edit" class="form-control mb-3" placeholder="First Name">
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">lastName</label> Last Name
+                            <input type="text" id="lastName" formControlName="lastName" [readOnly]="!edit" class="form-control mb-3" placeholder="Last Name">
+                        </div>
+
+                    </div>
+                    <!-- <div class="row">
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">password</label> Password
+                                <input type="password" id="password" formControlName="password" class="form-control mb-3" placeholder="Enter Password">
+                            </div>
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-5">
+                                <label for="inputEmail" class="sr-only">confirmPassword</label>Confirm Password
+                                <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control mb-3" placeholder="Confirm Password">
+                            </div>
+                        </div> -->
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">mobile</label>Mobile number
+                            <input type="text" id="mobile" formControlName="mobile" [readOnly]="!edit" class="form-control mb-3" placeholder="Mobile number">
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">phone</label> Phone
+                            <input type="text" id="phone" formControlName="phone" [readOnly]="!edit" class="form-control mb-3" placeholder="Phone number">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">userType</label> User Type
+                            <div class="input-group mb-3">
+                                <select class="custom-select" id="inputGroupSelect01" formControlName="userType" disabled>
+                                      <option value="" selected>Choose...</option>
+                                      <option value="employee" selected>Employee</option>
+                                      <option value="manager">Manager</option>
+                                      <option value="admin" [disabled]="serv.getUserData().userType!=='admin'">Admin</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-5">
+                            <label for="inputEmail" class="sr-only">dob</label> DOB
+                            <input type="date" id="dob" formControlName="dob" [readOnly]="!edit" class="form-control mb-3" placeholder="Phone number">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <h3>Password</h3>
+        <div class="row" *ngIf="!changePassword">
+            <div class="col-lg-2">
+                <button class="btn btn-primary" (click)="changePassword=true;">Change Password</button>
+            </div>
+        </div>
+        <ng-container *ngIf="changePassword">
+            <form [formGroup]="password">
+                <div class="row">
+                    <div class="col-lg-5">
+                        <label for="inputEmail" class="sr-only">password</label> Password
+                        <input type="password" id="password" formControlName="password" class="form-control mb-3" placeholder="Enter Password">
+                    </div>
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-5">
+                        <label for="inputEmail" class="sr-only">confirmPassword</label>Confirm Password
+                        <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control mb-3" placeholder="Confirm Password">
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-lg-5"></div>
+                <div class="col-lg-2"></div>
+                <div class="col-lg-5">
+                    <div class="row">
+                        <div class="col-lg-5"></div>
+                        <div class="col-lg-5 text-right">
+                            <button class="btn btn-secondary" (click)="changePassword=false;">Cancel</button>
+                        </div>
+                        <div class="col-lg-2 text-right">
+                            <button class="btn btn-primary" (click)="updatePassword()">Change</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+    </div>
+</main>

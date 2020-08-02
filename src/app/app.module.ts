@@ -27,6 +27,9 @@ import { UpdatecontactComponent } from './updatecontact/updatecontact.component'
 import { AdduserComponent } from './adduser/adduser.component';
 import { UsersComponent } from './users/users.component';
 import { UsershomeComponent } from './usershome/usershome.component';
+import { ProfileComponent } from './profile/profile.component';
+import { ConfirmOrderComponent } from './confirm-order/confirm-order.component';
+import { ManagerClosingLeadComponent } from './manager-closing-lead/manager-closing-lead.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,6 +50,9 @@ import { UsershomeComponent } from './usershome/usershome.component';
     AdduserComponent,
     UsersComponent,
     UsershomeComponent,
+    ProfileComponent,
+    ConfirmOrderComponent,
+    ManagerClosingLeadComponent,
   ],
   imports: [
     BrowserModule,
