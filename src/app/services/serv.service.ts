@@ -8,7 +8,7 @@ import { JsonPipe } from '@angular/common';
   providedIn: 'root'
 })
 export class ServService {
-  constructor(private http:HttpClient,private router:Router) { }
+  constructor(private http: HttpClient, private router: Router) { }
   login(credentials){
     return this.http.post(`${environment.serv_url}/login`,credentials);
   }
@@ -104,7 +104,7 @@ managerCancelled(details){
     }),
   });
 }
-//contacts
+// contacts
 getAllContacts(){
   return this.http.get(`${environment.serv_url}/listcontacts`,{
     headers: new HttpHeaders({
@@ -218,7 +218,7 @@ changePassword(details){
     localStorage.removeItem('token');
   }
   setEmail(email){
-    localStorage.setItem("email",window.btoa(email));
+    localStorage.setItem("email", window.btoa(email));
   }
   getEmail(){
     return window.atob(localStorage.getItem('email'))

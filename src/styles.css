@@ -14,3 +14,12 @@
 #avatar:focus {
     outline: 0;
 }
+
+a,
+a:focus,
+a:active,
+button,
+button:focus,
+button:active {
+    outline: 0 !important;
+}

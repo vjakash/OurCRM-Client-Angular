@@ -108,6 +108,13 @@
         </div>
     </ng-container>
     <ng-container *ngIf="!displayLoader && active==='employees'">
+        <div class="container" *ngIf="users['employees'].length===0">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>No Employees to display</p>
+                </div>
+            </div>
+        </div>
         <div class="container-fluid" *ngFor="let item of users['employees']; let i=index">
             <div class="row" [ngClass]="{'leadSelected':item.selected}">
                 <div class="col-lg-1 p-3">
@@ -212,9 +219,17 @@
         </div>
     </ng-container>
     <ng-container *ngIf="!displayLoader && active==='managers'">
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-6" style="height:70vh;overflow: auto;">
+                    <div class="container" *ngIf="users['managers'].length===0">
+                        <div class="row">
+                            <div class="col-lg-12 text-center">
+                                <p>No Manager to display</p>
+                            </div>
+                        </div>
+                    </div>
                     <ng-container *ngFor="let item of users['managers']; let i=index">
                         <div class="row" [ngClass]="{'leadSelected':item.selected}">
                             <div class="col-lg-1 p-3">
@@ -290,6 +305,13 @@
                     <div class="row mt-3">
                         <div class="col-lg-12">
                             <h2 class="font-weight-bold" style="text-decoration: underline;">Team</h2>
+                            <div class="container" *ngIf="users['managers'][indexOfSelectedManager].team.length===0">
+                                <div class="row">
+                                    <div class="col-lg-12 text-center">
+                                        <p>No Members in the team</p>
+                                    </div>
+                                </div>
+                            </div>
                             <ul *ngFor="let teamMember of users['managers'][indexOfSelectedManager].team">
                                 <li>
                                     <h3> {{teamMember.firstName |titlecase}} {{teamMember.lastName |titlecase}}</h3>
@@ -310,6 +332,13 @@
         </div>
     </ng-container>
     <ng-container *ngIf="!displayLoader && active==='admins' && serv.getUserData().userType==='admin'">
+        <div class="container" *ngIf="users['admins'].length===0">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <p>No Admin to display</p>
+                </div>
+            </div>
+        </div>
         <div class="container-fluid" *ngFor="let item of users['admins']; let i=index">
             <div class="row" [ngClass]="{'leadSelected':item.selected}">
                 <div class="col-lg-1 p-3">

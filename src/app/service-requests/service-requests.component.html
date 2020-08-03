@@ -1,0 +1,150 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-12 px-md-4">
+    <app-toasts></app-toasts>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Service Requests</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <button type="button" class="btn btn btn-outline-primary" routerLink="/dashboard/addlead">Add</button>
+                <button type="button" class="btn btn" (click)="deleteLead()" [ngClass]="{'btn-danger':selectedService.length!==0,'btn-outline-secondary':selectedService.length===0}" [disabled]="selectedService.length===0">Delete</button>
+            </div>
+            <!-- <div class="btn-group mr-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+            </div> -->
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+          <span data-feather="calendar"></span>
+          This week
+        </button> -->
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row" style="height: 30px;">
+            <div class="col-lg-1 ">
+                <div class="row">
+                    <div class="col-lg-6"> </div>
+                    <div class="col-lg-6"> <input type="checkbox" [checked]="selectAllLeads" (change)="selectAllLeads=!selectAllLeads;selectAll()" /></div>
+                </div>
+            </div>
+            <div class="col-lg-9"></div>
+            <!-- <div class="col-lg-2 text-right">
+                <div class="btn-group mr-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" routerLink="/dashboard/addlead">Add</button>
+                    <button type="button" class="btn btn-sm" (click)="deleteLead()" [ngClass]="{'btn-danger':selectedLead.length!==0,'btn-outline-secondary':selectedLead.length===0}" [disabled]="selectedLead.length===0">Delete</button>
+                </div>
+            </div> -->
+        </div>
+        <hr>
+    </div>
+    <div class="container" *ngIf="displayLoader">
+        <div class="row mt-5">
+            <div class="col-lg-12 mt-5 text-center">
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" *ngIf="leads.length===0 && !displayLoader">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <p>No Leads to display</p>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="!displayLoader">
+        <div class="container-fluid" *ngFor="let item of leads; let i=index">
+            <div class="row" [ngClass]="{'leadSelected':item.selected}">
+                <div class="col-lg-1 p-3">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <button class="editbtn" [routerLink]="['/dashboard/updatelead/',item['_id']]" [disabled]="item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee'"><fa-icon [icon]="faPencilAlt" ></fa-icon></button>
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="checkbox" [checked]="item.selected" class="leads" (change)="item.selected=!item.selected; getSelectedLeads()" [value]="item['_id']" />
+                        </div>
+                    </div>
+
+                </div>
+                <!-- <div class="col-lg-1 p-3"></div> -->
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h3>{{item.firstName|titlecase}} {{item.lastName|titlecase}}</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+item.phone">{{item.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+item.email">{{item.email}}</a>
+                                <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                <a [href]="'tel:'+item.mobile">{{item.mobile}}</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Company: </span>{{item.company}} <span class="text-muted font-weight-normal">| Title: </span> {{item.title}} <span class="text-muted font-weight-normal"> | Lead Source : </span>{{item.leadSource}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 text-left">
+                    <p class="text-muted">Status</p>
+                    <p *ngIf="!updateLeadStatus||activeLead!==item['_id']">{{item.leadStatus}}&nbsp;&nbsp; <button class="editbtn" (click)="updateLeadStatus=!updateLeadStatus;activeLead=item['_id'];activeLeadStatus=item.leadStatus" [disabled]="(item['owner']!==serv.getUserData().email && serv.getUserData().userType==='employee') || (item.leadStatus==='Completed'  || item.leadStatus==='Cancelled')"><fa-icon [icon]="faPencilAlt" ></fa-icon></button></p>
+                    <div class="input-group mb-3" *ngIf="updateLeadStatus&&activeLead===item['_id']">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-sm btn-danger" (click)="updateLeadStatus=!updateLeadStatus;activeLead='';activeLeadStatus=''">x</button>
+                            <!-- {{activeLeadStatus}}{{item.leadStatus}} -->
+                        </div>
+                        <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="activeLeadStatus">
+                            <option value="New" [selected]="item.leadStatus==='New'">New</option>
+                            <option value="Contacted" [selected]="item.leadStatus==='Contacted'">Contacted</option>
+                            <!-- <option value="Lost" [selected]="item.leadStatus==='Lost'">Lost</option> -->
+                            <option value="Qualified" [selected]="item.leadStatus==='Qualified'">Qualified</option>
+                            <option value="Confirmed" [selected]="item.leadStatus==='Confirmed'">Confirmed</option>
+                            <option value="Cancelled" [selected]="item.leadStatus==='Cancelled'" [disabled]="serv.getUserData().userType==='employee'">Cancelled</option>
+                            <option value="Completed" [selected]="item.leadStatus==='Completed'" [disabled]="serv.getUserData().userType==='employee'">Completed</option>
+                        </select>
+                        <ng-template #content let-modal>
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="modal-basic-title">Revenue</h4>
+                                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click');activeLead='';activeLeadStatus='';activeIndex=null;revenue=0;">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                <h6>Enter the revenue from the lead</h6>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">$</span>
+                                    </div>
+                                    <input type="number" class="form-control" [(ngModel)]="revenue" placeholder="revenue" aria-label="Username" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-dark" (click)="leadConfirmed();modal.close('Save click')">Update</button>
+                            </div>
+                        </ng-template>
+
+                        <!-- <button class="btn btn-lg btn-outline-primary" (click)="open(content)">Launch demo modal</button> -->
+                        <div class="input-group-append">
+                            <button class="btn btn-sm btn-success" (click)="updateStatus(i,item['_id'],activeLeadStatus,item.leadStatus);"><fa-icon [icon]="faCheck" ></fa-icon></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 text-right">
+                    <h5 class="mt-2" style="color: #515053;">Owner: {{item.ownerName|titlecase}}</h5>
+                    <p class="text-muted">Created on: {{item.createdOn|date:'short'}}</p>
+                </div>
+
+            </div>
+            <hr>
+        </div>
+    </ng-container>
+</main>

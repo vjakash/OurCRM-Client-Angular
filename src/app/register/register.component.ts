@@ -39,7 +39,7 @@ displayLoader=false;
       let company = this.details.value.email.split("@");
         company = company[1].split(".")[0];
       if(company!==this.details.value.company){
-        this.showDanger("Enter a company Email Id");
+        this.showDanger("Enter a valid company name and Bussiness Email Id");
         return;
       }
       if(this.details.value.password===this.details.value.confirmPassword){

@@ -22,6 +22,7 @@ import { UsershomeComponent } from './usershome/usershome.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ConfirmOrderComponent } from './confirm-order/confirm-order.component';
 import { ManagerClosingLeadComponent } from './manager-closing-lead/manager-closing-lead.component';
+import { ServiceRequestsComponent } from './service-requests/service-requests.component';
 
 
 const routes: Routes = [{
@@ -80,6 +81,9 @@ const routes: Routes = [{
       component:AdduserComponent,
     }],
     canActivate:[UsersGuardGuard]
+  },{
+    path:'servicerequests',
+    component:ServiceRequestsComponent
   }]
 },{
   path:'confirmorder/:company/:id',

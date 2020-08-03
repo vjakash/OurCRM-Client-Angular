@@ -30,6 +30,8 @@ import { UsershomeComponent } from './usershome/usershome.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ConfirmOrderComponent } from './confirm-order/confirm-order.component';
 import { ManagerClosingLeadComponent } from './manager-closing-lead/manager-closing-lead.component';
+import { ServiceRequestsComponent } from './service-requests/service-requests.component';
+import { AddservicerequestsComponent } from './addservicerequests/addservicerequests.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -53,6 +55,8 @@ import { ManagerClosingLeadComponent } from './manager-closing-lead/manager-clos
     ProfileComponent,
     ConfirmOrderComponent,
     ManagerClosingLeadComponent,
+    ServiceRequestsComponent,
+    AddservicerequestsComponent,
   ],
   imports: [
     BrowserModule,
