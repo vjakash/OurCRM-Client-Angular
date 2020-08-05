@@ -18,20 +18,40 @@
         </div>
     </div>
     <div class="container-fluid">
-        <div class="row" style="height: 30px;">
+        <div class="row" style="min-height: 30px;">
             <div class="col-lg-1 ">
                 <div class="row">
                     <div class="col-lg-6"> </div>
                     <div class="col-lg-6"> <input type="checkbox" [checked]="selectAllLeads" (change)="selectAllLeads=!selectAllLeads;selectAll()" /></div>
                 </div>
             </div>
-            <div class="col-lg-9"></div>
-            <!-- <div class="col-lg-2 text-right">
-                <div class="btn-group mr-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" routerLink="/dashboard/addlead">Add</button>
-                    <button type="button" class="btn btn-sm" (click)="deleteLead()" [ngClass]="{'btn-danger':selectedLead.length!==0,'btn-outline-secondary':selectedLead.length===0}" [disabled]="selectedLead.length===0">Delete</button>
+            <div class="col-lg-3 search-container">
+                <input type="text" name="search" id="search" placeholder="Search.." [(ngModel)]="searchString">
+            </div>
+            <div class="col-lg-4"></div>
+            <div class="col-lg-2">
+                <div class="input-group mb-3">
+                    Sort &nbsp;&nbsp;&nbsp; <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="sortType" (change)="sort()">
+                        <option value="asc">Asc</option>
+                        <option value="dsc">Desc</option>
+                     </select>
                 </div>
-            </div> -->
+            </div>
+            <div class="col-lg-2">
+                <div class="input-group mb-3">
+                    Sort By &nbsp;&nbsp;&nbsp; <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="sortBy" (change)="sort()">
+                        <option value="firstName">First Name</option>
+                        <option value="lastName">Last Name</option>
+                        <option value="company">Company</option>
+                        <option value="ownerName">Owner</option>
+                        <option value="leadStatus">Lead Status</option>
+                        <option value="creationTime">Creation Time</option>
+                        <option value="leadSource">Lead Source</option>
+                        <option value="title">Title</option>
+                     </select>
+                </div>
+            </div>
+
         </div>
         <hr>
     </div>
@@ -59,7 +79,12 @@
         </div>
     </div>
     <ng-container *ngIf="!displayLoader">
-        <div class="container-fluid" *ngFor="let item of leads; let i=index">
+        <div class="row" *ngIf="(leads | search : searchString:'leads').length===0">
+            <div class="col-lg-12 text-center">
+                <p>No Leads to display</p>
+            </div>
+        </div>
+        <div class="container-fluid" *ngFor="let item of leads | search:searchString:'leads'; let i=index">
             <div class="row" [ngClass]="{'leadSelected':item.selected}">
                 <div class="col-lg-1 p-3">
                     <div class="row">

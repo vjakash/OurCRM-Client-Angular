@@ -32,6 +32,8 @@ import { ConfirmOrderComponent } from './confirm-order/confirm-order.component';
 import { ManagerClosingLeadComponent } from './manager-closing-lead/manager-closing-lead.component';
 import { ServiceRequestsComponent } from './service-requests/service-requests.component';
 import { AddservicerequestsComponent } from './addservicerequests/addservicerequests.component';
+import {SearchPipe} from './pipes/search.pipe';
+import { UpdateServiceRequestComponent } from './update-service-request/update-service-request.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,6 +59,8 @@ import { AddservicerequestsComponent } from './addservicerequests/addservicerequ
     ManagerClosingLeadComponent,
     ServiceRequestsComponent,
     AddservicerequestsComponent,
+    SearchPipe,
+    UpdateServiceRequestComponent
   ],
   imports: [
     BrowserModule,

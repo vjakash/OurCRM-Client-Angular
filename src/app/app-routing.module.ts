@@ -23,6 +23,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { ConfirmOrderComponent } from './confirm-order/confirm-order.component';
 import { ManagerClosingLeadComponent } from './manager-closing-lead/manager-closing-lead.component';
 import { ServiceRequestsComponent } from './service-requests/service-requests.component';
+import { AddservicerequestsComponent } from './addservicerequests/addservicerequests.component';
+import { UpdateServiceRequestComponent } from './update-service-request/update-service-request.component';
 
 
 const routes: Routes = [{
@@ -46,11 +48,13 @@ const routes: Routes = [{
   path:'dashboard',
   component:DashboardComponent,
   canActivate:[AuthGuard],
-  children:[{
+  children:[
+  //   {
+  //   path:'',
+  //   component:HomeComponent
+  // },
+  {
     path:'',
-    component:HomeComponent
-  },{
-    path:'profile',
     component:ProfileComponent
   },{
     path:'leads',
@@ -84,6 +88,12 @@ const routes: Routes = [{
   },{
     path:'servicerequests',
     component:ServiceRequestsComponent
+  },{
+    path:'addservicerequests',
+    component:AddservicerequestsComponent
+  },{
+    path:'updateservicerequest/:id',
+    component:UpdateServiceRequestComponent
   }]
 },{
   path:'confirmorder/:company/:id',

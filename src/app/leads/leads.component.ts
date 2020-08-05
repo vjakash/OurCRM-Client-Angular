@@ -1,6 +1,7 @@
 import { Component, OnInit,ViewChild } from '@angular/core';
 import { faPencilAlt  } from '@fortawesome/free-solid-svg-icons';
 import { faCheck   } from '@fortawesome/free-solid-svg-icons';
+import { faSearch   } from '@fortawesome/free-solid-svg-icons';
 import {ServService} from '../services/serv.service';
 import { ToastServiceService } from '../services/toast-service.service';
 import { Router } from '@angular/router';
@@ -17,7 +18,12 @@ export class LeadsComponent implements OnInit {
   @ViewChild('content') content: any;
   faPencilAlt = faPencilAlt;
   faCheck=faCheck;
+  faSearch=faSearch;
+  searchString='';
+  sortType='asc';
+  sortBy='creationTime';
   leads=[];
+  leadsOriginal=[];
   displayLoader=true;
   selectedLead=[];
   selectAllLeads=false;
@@ -35,8 +41,19 @@ export class LeadsComponent implements OnInit {
   }
   loadLeads(){
     this.serv.getAllLeads().subscribe((data)=>{
-      this.displayLoader=false;
       this.leads=data['leads'].reverse().map(lead=>{lead.selected=false;return lead});
+      this.leadsOriginal=data['leads'].reverse().map(lead=>{lead.selected=false;return lead});
+      this.sort();
+      // this.leads=this.leads.sort((a,b)=>{
+      //   if(a['firstName']>b['firstName']){
+      //     return 1;
+      //   }
+      //   if(a['firstName']<b['firstName']){
+      //     return -1;
+      //   }
+      //     return 0;
+      //   });
+      this.displayLoader=false;
       // console.log(this.leads);
     },(err)=>{
       this.displayLoader=false;
@@ -130,6 +147,38 @@ export class LeadsComponent implements OnInit {
         })
     }else{
       this.open(this.content);
+    }
+  }
+  sort(){
+    if(this.sortType=='asc'){
+      if(this.sortBy=='creationTime'){
+        this.leads=this.leadsOriginal;
+      }else{
+        this.leads=this.leads.sort((a,b)=>{
+          if(a[this.sortBy]>b[this.sortBy]){
+            return 1;
+          }
+          if(a[this.sortBy]<b[this.sortBy]){
+            return -1;
+          }
+            return 0;
+          });
+      }
+    }else{
+      if(this.sortBy=='creationTime'){
+        this.leads=[...this.leadsOriginal];
+        this.leads=this.leads.reverse();
+      }else{
+        this.leads=this.leads.sort((a,b)=>{
+          if(a[this.sortBy]>b[this.sortBy]){
+            return -1;
+          }
+          if(a[this.sortBy]<b[this.sortBy]){
+            return 1;
+          }
+            return 0;
+          });
+      }
     }
   }
   showStandard(msg) {

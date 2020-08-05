@@ -15,12 +15,16 @@ export class ContactsComponent implements OnInit {
   faPencilAlt = faPencilAlt;
   faCheck=faCheck;
   contacts=[];
+  contactsOriginal=[];
   displayLoader=true;
   selectedContact=[];
   selectAllContacts=false;
   updateLeadStatus=false;
   activeLeadStatus='';
   activeLead='';
+  searchString='';
+  sortType='asc';
+  sortBy='firstName';
   constructor(private fb:FormBuilder,private serv:ServService,private toastService:ToastServiceService,private router:Router) { 
     this.loadContacts();
   }
@@ -31,6 +35,7 @@ export class ContactsComponent implements OnInit {
     this.serv.getAllContacts().subscribe((data)=>{
       this.displayLoader=false;
       this.contacts=data['contacts'].reverse().map(lead=>{lead.selected=false;return lead});
+      this.contactsOriginal=[...this.contacts];
       // console.log(this.leads);
     },(err)=>{
       this.displayLoader=false;
@@ -70,27 +75,37 @@ export class ContactsComponent implements OnInit {
       }
     }
   }
-  updateStatus(index, leadId, leadStatus,currentStatus){
-    if(leadStatus!==currentStatus){
-        // this.displayLoader=true;
-        let oldStatus=this.contacts[index]['leadStatus'];
-        this.contacts[index]['leadStatus']=leadStatus;
-        this.updateLeadStatus=!this.updateLeadStatus;
-        this.activeLead='';
-        this.activeLeadStatus='';
-        this.serv.updateLeadStatus({ leadId, leadStatus}).subscribe((data)=>{
-             this.showSuccess(data['message']);
-              // this.loadLeads();
-        },(err)=>{
-          console.log(err);
-              this.showDanger(err.error['message']);
-              this.contacts[index]['leadStatus']=oldStatus;
-          })
+  sort(){
+    if(this.sortType=='asc'){
+      if(this.sortBy=='creationTime'){
+        this.contacts=this.contactsOriginal;
+      }else{
+        this.contacts=this.contacts.sort((a,b)=>{
+          if(a[this.sortBy].toLowerCase()>b[this.sortBy].toLowerCase()){
+            return 1;
+          }
+          if(a[this.sortBy].toLowerCase()<b[this.sortBy].toLowerCase()){
+            return -1;
+          }
+            return 0;
+          });
+      }
     }else{
-      this.activeLead='';
-      this.activeLeadStatus='';
+      if(this.sortBy=='creationTime'){
+        this.contacts=[...this.contactsOriginal];
+        this.contacts=this.contacts.reverse();
+      }else{
+        this.contacts=this.contacts.sort((a,b)=>{
+          if(a[this.sortBy].toLowerCase()>b[this.sortBy].toLowerCase()){
+            return -1;
+          }
+          if(a[this.sortBy].toLowerCase()<b[this.sortBy].toLowerCase()){
+            return 1;
+          }
+            return 0;
+          });
+      }
     }
-   
   }
   showStandard(msg) {
     this.toastService.show(msg);

@@ -13,59 +13,68 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 })
 export class ServiceRequestsComponent implements OnInit {
   @ViewChild('content') content: any;
+  // @ViewChild('content1') content1: any;
   faPencilAlt = faPencilAlt;
   faCheck=faCheck;
-  leads=[];
+  serviceRequests=[];
   displayLoader=true;
   selectedService=[];
   // selectedLead=[];
-  selectAllLeads=false;
-  updateLeadStatus=false;
-  activeLeadStatus='';
-  activeLead='';
+  requestsOriginal=[];
+  selectAllRequests=false;
+  updateRequestStatus=false;
+  activeRequestStatus='';
+  activeRequest='';
   activeIndex;
   closeResult = '';
+  description='';
+  searchString='';
+  sortType='asc';
+  sortBy='createdOn';
   revenue=null;
   constructor(private modalService: NgbModal,private fb:FormBuilder,public serv:ServService,private toastService:ToastServiceService,private router:Router) { 
-    this.loadLeads();
+    this.loadServiceRequests();
   }
 
   ngOnInit(): void {
   }
-  loadLeads(){
-    this.serv.getAllLeads().subscribe((data)=>{
+  loadServiceRequests(){
+    this.serv.getAllServiceRequests().subscribe((data)=>{
+      this.serviceRequests=data['serviceRequests'].reverse().map(lead=>{lead.selected=false;return lead});
+      this.requestsOriginal=[...this.serviceRequests];
+      this.sort();
       this.displayLoader=false;
-      this.leads=data['leads'].reverse().map(lead=>{lead.selected=false;return lead});
       // console.log(this.leads);
     },(err)=>{
       this.displayLoader=false;
       console.log(err);
+      this.showDanger(err.error['message']);
     });
   }
-  getSelectedLeads(){
-    this.selectedService=this.leads.filter(item=>{if(item.selected)return item['_id']});
+  getSelectedRequests(){
+    this.selectedService=this.serviceRequests.filter(item=>{if(item.selected)return item['_id']});
     // console.log(this.selectedLead);
   }
   selectAll(){
-    if(this.selectAllLeads){
-      this.leads=this.leads.map(lead=>{lead.selected=true;return lead});
-      this.getSelectedLeads();
+    if(this.selectAllRequests){
+      this.serviceRequests=this.serviceRequests.map(lead=>{lead.selected=true;return lead});
+      this.getSelectedRequests();
     }else{
-      this.leads=this.leads.map(lead=>{lead.selected=false;return lead});
-      this.getSelectedLeads();
+      this.serviceRequests=this.serviceRequests.map(lead=>{lead.selected=false;return lead});
+      this.getSelectedRequests();
     }
   }
-  deleteLead(){
+  deleteRequest(){
     let cnfrm=confirm("Do you really want to delete the selected leads?");
     if(cnfrm){
       if(this.selectedService.length!=0){
         for(let i of this.selectedService){
           this.displayLoader=true;
-          this.serv.deleteLead(i['_id']).subscribe((data)=>{
+          this.serv.deleteServiceRequest(i['_id']).subscribe((data)=>{
             this.showSuccess(data['message']);
-            this.selectAllLeads=false;
+            this.selectAllRequests=false;
             this.selectedService=[];
-            this.loadLeads();
+            this.loadServiceRequests();
           },(err)=>{
             console.log(err);
             this.showDanger(err.error['message']);
@@ -74,62 +83,108 @@ export class ServiceRequestsComponent implements OnInit {
       }
     }
   }
-  updateStatus(index, leadId, leadStatus,currentStatus){
+  updateStatus(index, serviceRequestsId, requestStatus,currentStatus){
     this.activeIndex=index;
-    if(leadStatus!==currentStatus){
-      if(leadStatus==='Confirmed'){
-        this.open(this.content);
-        return;
-      }
-        this.sendStatus(index, leadId, leadStatus,currentStatus);
+    if(requestStatus!==currentStatus){
+        // console.log(index, serviceRequestsId, requestStatus,currentStatus);
+        this.sendStatus(index,serviceRequestsId, requestStatus,currentStatus);
     }else{
-      this.activeLead='';
-      this.activeLeadStatus='';
+      this.activeRequest='';
+      this.activeRequestStatus='';
       this.activeIndex=null;
       this.revenue==null;
     }
   }
-  sendStatus(index, leadId, leadStatus,currentStatus){
+  sendStatus(index, serviceRequestsId, requestStatus,currentStatus){
       // this.displayLoader=true;
-      let oldStatus=this.leads[index]['leadStatus'];
-      this.leads[index]['leadStatus']=leadStatus;
-      this.updateLeadStatus=!this.updateLeadStatus;
-      this.activeLead='';
-      this.activeLeadStatus='';
+      let oldStatus=this.serviceRequests[index]['requestStatus'];
+      this.serviceRequests[index]['requestStatus']=requestStatus;
+      this.updateRequestStatus=!this.updateRequestStatus;
+      this.activeRequest='';
+      this.activeRequestStatus='';
       this.activeIndex=null;
-      this.serv.updateLeadStatus({ leadId, leadStatus}).subscribe((data)=>{
+      this.serv.updateServiceRequestStatus({ serviceRequestsId, requestStatus}).subscribe((data)=>{
           this.showSuccess(data['message']);
-            this.loadLeads();
+            this.loadServiceRequests();
       },(err)=>{
         console.log(err);
             this.showDanger(err.error['message']);
-            this.leads[index]['leadStatus']=oldStatus;
+            this.serviceRequests[index]['leadStatus']=oldStatus;
         })
   }
-  leadConfirmed(){
-    let index =this.activeIndex;
-    let leadId=this.activeLead;
-    let leadStatus=this.activeLeadStatus;
-    if(this.revenue!==0){
-      let oldStatus=this.leads[index]['leadStatus'];
-      this.leads[index]['leadStatus']=leadStatus;
-      this.updateLeadStatus=!this.updateLeadStatus;
-      this.activeLead='';
-      this.activeLeadStatus='';
-      this.activeIndex=null;
-      this.serv.confirmLead({ leadId, leadStatus ,revenue:this.revenue}).subscribe((data)=>{
-          this.showSuccess(data['message']);
-            this.loadLeads();
-            this.revenue=null;
-      },(err)=>{
-        console.log(err);
-            this.showDanger(err.error['message']);
-            this.leads[index]['leadStatus']=oldStatus;
-            this.revenue=null;
-        })
+
+  showDescription(description){
+    this.description=description;
+    this.open(this.content);
+  }
+  sort(){
+    let [str1,str2]=this.sortBy.split(":");
+    // console.log(str1,str2,this.sortBy)
+    if(this.sortType==='asc'){
+      if(this.sortBy=='createdOn'){
+        this.serviceRequests=this.requestsOriginal;
+      }else{
+        if(str1==='Contact'){
+          this.serviceRequests.sort((a,b)=>{
+            if(a.contact[str2].toLowerCase()<b.contact[str2].toLowerCase()){
+              return -1;
+            }else if(a.contact[str2].toLowerCase()>b.contact[str2].toLowerCase()){
+              return 1;
+            }
+            return 0;
+          });
+        }else{
+          this.serviceRequests.sort((a,b)=>{
+            if(a[str1].toLowerCase()<b[str1].toLowerCase()){
+              return -1;
+            }else if(a[str1].toLowerCase()>b[str1].toLowerCase()){
+              return 1;
+            }
+            return 0;
+          });
+        }
+      }
     }else{
-      this.open(this.content);
-    }
+      if(this.sortBy=='createdOn'){
+       
+        this.serviceRequests=[...this.requestsOriginal];
+        this.serviceRequests.reverse();;
+      }else{
+        if(str1==='Contact'){
+          this.serviceRequests.sort((a,b)=>{
+            if(a.contact[str2].toLowerCase()<b.contact[str2].toLowerCase()){
+              return 1;
+            }else if(a.contact[str2].toLowerCase()>b.contact[str2].toLowerCase()){
+              return -1;
+            }
+            return 0;
+          });
+        }else{
+          this.serviceRequests.sort((a,b)=>{
+            if(a[str1].toLowerCase()<b[str1].toLowerCase()){
+              return 1;
+            }else if(a[str1].toLowerCase()>b[str1].toLowerCase()){
+              return -1;
+            }
+            return 0;
+          });
+        }
+      }
+    }          
+                 
+                    
+                
+    // }else{
+    //     if(str1==='Contact'){
+    //       if(this.sortBy=='createdOn'){
+    //         this.serviceRequests=[...this.requestsOriginal];
+    //         this.serviceRequests.reverse();;
+    //       }else{
+            
+    //   }
+    // }
+    // }
+  
   }
   showStandard(msg) {
     this.toastService.show(msg);

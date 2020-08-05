@@ -22,6 +22,12 @@ export class UsersComponent implements OnInit {
     'managers':[],
     'admins':[],
   };
+  usersOriginal={
+    'allusers':[],
+    'employees':[],
+    'managers':[],
+    'admins':[],
+  }
   changeAccessRights=true;
   indexOfSelectedManager=0;
   displayLoader=true;
@@ -31,6 +37,9 @@ export class UsersComponent implements OnInit {
   activeUserType='';
   activeUser='';
   activeUserForAccessRights='';
+  sortType='asc';
+  sortBy='firstName';
+  searchString='';
   constructor(private fb:FormBuilder,public serv:ServService,private toastService:ToastServiceService,private router:Router) { 
     this.loadUsers();
   }
@@ -66,17 +75,21 @@ export class UsersComponent implements OnInit {
               return lead;
              }
          });
-         this.users.employees.sort((a,b)=>{
-          if(a['firstName']>b['firstName']){
-            return -1;
-          }
-          if(a['firstName']<b['firstName']){
-            return -1;
-          }
-            return 0;
-          });
-         this.users.managers.sort((a,b)=>a['firstName']-b['firstName']);
-         this.users.admins.sort((a,b)=>a['firstName']-b['firstName']);
+         this.usersOriginal.employees=[...this.users.employees];
+         this.usersOriginal.managers=[...this.users.managers];
+         this.usersOriginal.admins=[...this.users.admins];
+         this.sort();
+        //  this.users.employees.sort((a,b)=>{
+        //   if(a['firstName']>b['firstName']){
+        //     return -1;
+        //   }
+        //   if(a['firstName']<b['firstName']){
+        //     return -1;
+        //   }
+        //     return 0;
+        //   });
+        //  this.users.managers.sort((a,b)=>a['firstName']-b['firstName']);
+        //  this.users.admins.sort((a,b)=>a['firstName']-b['firstName']);
          this.displayLoader=false;
       // console.log(this.leads);
     },(err)=>{
@@ -177,6 +190,41 @@ export class UsersComponent implements OnInit {
     this.activeUserType='';
     this.editUserType=!this.editUserType;
   }
+  }
+  sort(){
+    if(this.sortType=='asc'){
+        this.users[this.active]= this.users[this.active].sort((a,b)=>{
+          if(typeof(a[this.sortBy])==='string'){
+            a[this.sortBy]=a[this.sortBy].toLowerCase();
+          }
+          if(typeof(b[this.sortBy])==='string'){
+            b[this.sortBy]=b[this.sortBy].toLowerCase();
+          }
+          if(a[this.sortBy]>b[this.sortBy]){
+            return 1;
+          }
+          if(a[this.sortBy]<b[this.sortBy]){
+            return -1;
+          }
+            return 0;
+          });
+    }else{
+        this.users[this.active]= this.users[this.active].sort((a,b)=>{
+          if(typeof(a[this.sortBy])==='string'){
+            a[this.sortBy]=a[this.sortBy].toLowerCase();
+          }
+          if(typeof(b[this.sortBy])==='string'){
+            b[this.sortBy]=b[this.sortBy].toLowerCase();
+          }
+          if(a[this.sortBy]>b[this.sortBy]){
+            return -1;
+          }
+          if(a[this.sortBy]<b[this.sortBy]){
+            return 1;
+          }
+            return 0;
+          });
+    }
   }
   showStandard(msg) {
     this.toastService.show(msg);

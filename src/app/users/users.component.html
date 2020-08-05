@@ -3,13 +3,13 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <div class="holder ml-5">
             <span *ngIf="false"> 
-                <button class="switchBtn" [ngClass]="{'active':active==='allusers'}" (click)="active='allusers';selectedLead=[]" >All Users</button> |
+                <button class="switchBtn" [ngClass]="{'active':active==='allusers'}" (click)="active='allusers';selectedLead=[];sortBy='firstName';sortType='asc';" >All Users</button> |
             </span>
-            <button class="switchBtn" [ngClass]="{'active':active==='employees'}" (click)="active='employees';selectedLead=[]">Employees</button> |
-            <button class="switchBtn" [ngClass]="{'active':active==='managers'}" (click)="active='managers';selectedLead=[]">Managers</button>
+            <button class="switchBtn" [ngClass]="{'active':active==='employees'}" (click)="active='employees';selectedLead=[];sortBy='firstName';sortType='asc';">Employees</button> |
+            <button class="switchBtn" [ngClass]="{'active':active==='managers'}" (click)="active='managers';selectedLead=[];sortBy='teamRevenue';sortType='dsc';sort();">Managers</button>
             <span *ngIf="serv.getUserData().userType==='admin'"> 
                 |
-                <button class="switchBtn" [ngClass]="{'active':active==='admins'}" (click)="active='admins'">Admins</button>
+                <button class="switchBtn" [ngClass]="{'active':active==='admins'}" (click)="active='admins';selectedLead=[];sortBy='firstName';sortType='asc';">Admins</button>
             </span>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
@@ -35,13 +35,29 @@
                     <div class="col-lg-6"> <input type="checkbox" [checked]="selectAllLeads" (change)="selectAllLeads=!selectAllLeads;selectAll()" /></div>
                 </div>
             </div>
-            <div class="col-lg-9"></div>
-            <!-- <div class="col-lg-2 text-right">
-                <div class="btn-group mr-2">
-                    <button type="button" class="btn btn-outline-primary" routerLink="/dashboard/users/adduser">Add User</button>
-                    <button type="button" class="btn " (click)="deleteLead()" [ngClass]="{'btn-danger':selectedLead.length!==0,'btn-outline-secondary':selectedLead.length===0}" [disabled]="selectedLead.length===0">Delete</button>
+            <div class="col-lg-3 search-container">
+                <input type="text" name="search" id="search" placeholder="Search.." [(ngModel)]="searchString">
+            </div>
+            <div class="col-lg-4"></div>
+            <div class="col-lg-2">
+                <div class="input-group mb-3">
+                    Sort &nbsp;&nbsp;&nbsp; <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="sortType" (change)="sort()">
+                        <option value="asc">Asc</option>
+                        <option value="dsc">Desc</option>
+                     </select>
                 </div>
-            </div> -->
+            </div>
+            <div class="col-lg-2">
+                <div class="input-group mb-3">
+                    Sort By &nbsp;&nbsp;&nbsp; <select class="custom-select" id="inputGroupSelect01" [(ngModel)]="sortBy" (change)="sort()">
+                        <option value="firstName">First Name</option>
+                        <option value="lastName">Last Name</option>
+                        <option value="managerName" *ngIf="active==='employees'">Manager</option>
+                        <option value="totalRevenue" *ngIf="active==='employees'">Total Revenue</option>
+                        <option value="teamRevenue" *ngIf="active==='managers'">Team Revenue</option>
+                     </select>
+                </div>
+            </div>
         </div>
         <hr>
     </div>
@@ -62,7 +78,7 @@
         </div>
     </div>
     <ng-container *ngIf="!displayLoader && active==='allusers'">
-        <div class="container-fluid" *ngFor="let item of users['allusers']; let i=index">
+        <div class="container-fluid" *ngFor="let item of users['allusers'] ; let i=index">
             <div class="row" [ngClass]="{'leadSelected':item.selected}">
                 <div class="col-lg-1 p-3">
                     <div class="row">
@@ -115,7 +131,12 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid" *ngFor="let item of users['employees']; let i=index">
+        <div class="row" *ngIf="(users['employees']|search : searchString:'users').length===0">
+            <div class="col-lg-12 text-center">
+                <p>No Employees to display</p>
+            </div>
+        </div>
+        <div class="container-fluid" *ngFor="let item of users['employees']|search : searchString:'users'; let i=index">
             <div class="row" [ngClass]="{'leadSelected':item.selected}">
                 <div class="col-lg-1 p-3">
                     <div class="row">
@@ -219,7 +240,6 @@
         </div>
     </ng-container>
     <ng-container *ngIf="!displayLoader && active==='managers'">
-
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-6" style="height:70vh;overflow: auto;">
@@ -230,7 +250,12 @@
                             </div>
                         </div>
                     </div>
-                    <ng-container *ngFor="let item of users['managers']; let i=index">
+                    <div class="row" *ngIf="(users['managers'] |search : searchString:'users').length===0">
+                        <div class="col-lg-12 text-center">
+                            <p>No Manager to display</p>
+                        </div>
+                    </div>
+                    <ng-container *ngFor="let item of users['managers'] |search : searchString:'users'; let i=index">
                         <div class="row" [ngClass]="{'leadSelected':item.selected}">
                             <div class="col-lg-1 p-3">
                                 <div class="row">
@@ -289,41 +314,49 @@
                     </ng-container>
                 </div>
                 <div class="col-lg-6" style="border-left: 1px solid black;height:70vh;overflow: auto;">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h1>{{users['managers'][indexOfSelectedManager].firstName|titlecase}} {{users['managers'][indexOfSelectedManager].lastName|titlecase}}</h1>
-                            <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+users['managers'][indexOfSelectedManager].phone">{{users['managers'][indexOfSelectedManager].phone}} </a><span class="text-muted font-weight-normal"> | Email: </span>
-                                <a [href]="'mailto:'+users['managers'][indexOfSelectedManager].email">{{users['managers'][indexOfSelectedManager].email}}</a>
-                                <span class="text-muted font-weight-normal"> | Mobile: </span>
-                                <a [href]="'tel:'+users['managers'][indexOfSelectedManager].mobile">{{users['managers'][indexOfSelectedManager].mobile}}</a>
-                            </p>
-                            <!-- <br> -->
-                            <h3>Team Revenue: {{users['managers'][indexOfSelectedManager].teamRevenue |currency}}</h3>
+                    <div class="row" *ngIf="(users['managers'] |search : searchString:'users').length===0">
+                        <div class="col-lg-12 text-center">
+                            Select manager to see details
                         </div>
                     </div>
+                    <ng-container *ngIf="(users['managers'] |search : searchString:'users').length!==0">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h1>{{(users['managers'] |search : searchString:'users')[indexOfSelectedManager].firstName|titlecase}} {{(users['managers'] |search : searchString:'users')[indexOfSelectedManager].lastName|titlecase}}</h1>
+                                <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+(users['managers'] |search : searchString:'users')[indexOfSelectedManager].phone">{{(users['managers'] |search : searchString:'users')[indexOfSelectedManager].phone}} </a>
+                                    <span class="text-muted font-weight-normal"> | Email: </span>
+                                    <a [href]="'mailto:'+(users['managers'] |search : searchString:'users')[indexOfSelectedManager].email">{{(users['managers'] |search : searchString:'users')[indexOfSelectedManager].email}}</a>
+                                    <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                    <a [href]="'tel:'+(users['managers'] |search : searchString:'users')[indexOfSelectedManager].mobile">{{(users['managers'] |search : searchString:'users')[indexOfSelectedManager].mobile}}</a>
+                                </p>
+                                <!-- <br> -->
+                                <h3>Team Revenue: {{(users['managers'] |search : searchString:'users')[indexOfSelectedManager].teamRevenue |currency}}</h3>
+                            </div>
+                        </div>
 
-                    <div class="row mt-3">
-                        <div class="col-lg-12">
-                            <h2 class="font-weight-bold" style="text-decoration: underline;">Team</h2>
-                            <div class="container" *ngIf="users['managers'][indexOfSelectedManager].team.length===0">
-                                <div class="row">
-                                    <div class="col-lg-12 text-center">
-                                        <p>No Members in the team</p>
+                        <div class="row mt-3">
+                            <div class="col-lg-12">
+                                <h2 class="font-weight-bold" style="text-decoration: underline;">Team</h2>
+                                <div class="container" *ngIf="(users['managers'] |search : searchString:'users')[indexOfSelectedManager].team.length===0">
+                                    <div class="row">
+                                        <div class="col-lg-12 text-center">
+                                            <p>No Members in the team</p>
+                                        </div>
                                     </div>
                                 </div>
+                                <ul *ngFor="let teamMember of (users['managers'] |search : searchString:'users')[indexOfSelectedManager].team">
+                                    <li>
+                                        <h3> {{teamMember.firstName |titlecase}} {{teamMember.lastName |titlecase}}</h3>
+                                        <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+teamMember.phone">{{teamMember.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+teamMember.email">{{teamMember.email}}</a>
+                                            <span class="text-muted font-weight-normal"> | Mobile: </span>
+                                            <a [href]="'tel:'+teamMember.mobile">{{teamMember.mobile}}</a>
+                                        </p>
+                                        <p class="font-weight-bold"><span class="text-muted font-weight-normal">Total Revenue gained : </span>{{teamMember.totalRevenue |currency}}</p>
+                                    </li>
+                                </ul>
                             </div>
-                            <ul *ngFor="let teamMember of users['managers'][indexOfSelectedManager].team">
-                                <li>
-                                    <h3> {{teamMember.firstName |titlecase}} {{teamMember.lastName |titlecase}}</h3>
-                                    <p class="font-weight-bold"><span class="text-muted font-weight-normal">Phone: </span><a [href]="'tel:'+teamMember.phone">{{teamMember.phone}} </a><span class="text-muted font-weight-normal"> | Email: </span><a [href]="'mailto:'+teamMember.email">{{teamMember.email}}</a>
-                                        <span class="text-muted font-weight-normal"> | Mobile: </span>
-                                        <a [href]="'tel:'+teamMember.mobile">{{teamMember.mobile}}</a>
-                                    </p>
-                                    <p class="font-weight-bold"><span class="text-muted font-weight-normal">Total Revenue gained : </span>{{teamMember.totalRevenue |currency}}</p>
-                                </li>
-                            </ul>
                         </div>
-                    </div>
+                    </ng-container>
                 </div>
 
 
@@ -339,7 +372,12 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid" *ngFor="let item of users['admins']; let i=index">
+        <div class="row" *ngIf="(users['admins']|search : searchString:'users').length===0">
+            <div class="col-lg-12 text-center">
+                <p>No Admin to display</p>
+            </div>
+        </div>
+        <div class="container-fluid" *ngFor="let item of users['admins']|search : searchString:'users'; let i=index">
             <div class="row" [ngClass]="{'leadSelected':item.selected}">
                 <div class="col-lg-1 p-3">
                     <div class="row">

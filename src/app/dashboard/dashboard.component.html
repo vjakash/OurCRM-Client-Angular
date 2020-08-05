@@ -10,11 +10,11 @@
             <!-- <img src="../../assets/images/avatar1.jpg " width="30 " height="28 " /> -->
             <!-- </div> -->
         </a>
-        <a class="py-2 d-none d-md-inline-block" routerLink="/dashboard/">Home</a>
+        <!-- <a class="py-2 d-none d-md-inline-block" routerLink="/dashboard/">Home</a> -->
         <a class="py-2 d-none d-md-inline-block" routerLink="/dashboard/leads">Leads</a>
         <a class="py-2 d-none d-md-inline-block" routerLink="/dashboard/contacts">Contacts</a>
         <a class="py-2 d-none d-md-inline-block" routerLink="/dashboard/servicerequests">Service Requests</a>
-        <a class="py-2 d-none d-md-inline-block" href="#">Change Requests</a>
+        <!-- <a class="py-2 d-none d-md-inline-block" href="#">Change Requests</a> -->
         <a class="py-2 d-none d-md-inline-block" routerLink="/dashboard/users" *ngIf="serv.getUserData().userType!=='employee' ">Users</a>
         <a class="py-2 d-none d-md-inline-block"></a>
         <a class="py-2 d-none d-md-inline-block" href="#" (click)="signOut() ">Sign Out</a>

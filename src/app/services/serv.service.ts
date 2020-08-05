@@ -205,8 +205,49 @@ changePassword(details){
     })
   });
 }
-
-
+//service-requests
+createServiceRequest(details){
+  return this.http.post(`${environment.serv_url}/createservicerequest`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    })
+  });
+}
+getAllServiceRequests(){
+  return this.http.get(`${environment.serv_url}/listservicerequests`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+getServiceRequestById(id){
+  return this.http.get(`${environment.serv_url}/listservicerequests/${id}`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+deleteServiceRequest(id){
+  return this.http.delete(`${environment.serv_url}/deleteservicerequest/${id}`,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+updateServiceRequest(details){
+  return this.http.put(`${environment.serv_url}/updateservicerequest`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
+updateServiceRequestStatus(details){
+  return this.http.put(`${environment.serv_url}/updateservicerequeststatus`,details,{
+    headers: new HttpHeaders({
+      authorization: this.getToken(),
+    }),
+  });
+}
 //localStorage
   setToken(token){
     localStorage.setItem("token",window.btoa(token));
